@@ -1,0 +1,134 @@
+%\documentclass[handout]{beamer}
+\documentclass{beamer}
+\usetheme{default}
+\usecolortheme{default}
+\useoutertheme{default}
+\usepackage[utf8x]{inputenc} %for linux users this might be better - be careful with ä,ü,ö,ß!
+%\usepackage[latin1]{inputenc}
+\usepackage{german}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{type1cm}
+\usepackage{floatflt}
+%\usepackage{cite}
+
+%\usepackage{pgfpages} 
+%%\pgfpagesuselayout{4 on 1}[a4paper,border shrink=4mm, landscape] 
+ 
+% Listing-settings
+\lstset{
+emph={int,for},
+emphstyle=\tt\color{red},
+%backgroundcolor=\color{lightestyellow},
+backgroundcolor=\color{white},
+stringstyle=\tt,
+basicstyle=\tt%,
+%numbers=left
+}
+
+%commands
+\newcommand{\email}[1]{\def\email{#1}}
+\newcommand{\insertemail}[0]{
+	\if \email
+		\relax
+	\else
+		\email\hspace{0.5em}\textbar\hspace{0.5em}
+	\fi
+}
+
+
+%Not allof those symbols
+\setbeamertemplate{navigation symbols}{
+\insertframenavigationsymbol
+}
+
+% Colors of Corporate Design
+\definecolor{cdred}{RGB}{163,38,56}
+\definecolor{cdpantone}{RGB}{125,154,170}
+\definecolor{cdbeige}{RGB}{169,162,141}
+
+% ColorSchema
+\setbeamercolor{structure}{fg=cdred!100}
+
+%Corporate Design headline
+\setbeamercolor{headline pagenumber}{fg=white,bg=cdred!100}
+\setbeamercolor{headline}{fg=cdred!100,bg=white}
+\setbeamertemplate{headline}
+{%
+\leavevmode
+\begin{beamercolorbox}[wd={\paperwidth},ht=0.1mm]{headline}
+	\rule{\paperwidth}{0.1mm}
+\end{beamercolorbox}
+\begin{beamercolorbox}[wd=10mm,ht=3mm,colsep=0.5mm]{headline pagenumber}
+	~~Seite~\insertframenumber
+\end{beamercolorbox}
+\begin{beamercolorbox}[wd={\paperwidth},ht=3mm,colsep=0.05mm,ignorebg]{headline}
+	~~\insertshorttitle~\textbar~\insertshortauthor
+\end{beamercolorbox}
+}
+
+%Color of Boxes
+\setbeamercolor{block body}{fg=black,bg=cdbeige!60}
+\setbeamercolor{block title}{fg=white,bg=cdred!100}
+
+%Rounded Boxes
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+%Corporate Design title page
+\setbeamerfont{title page title}{size={\fontsize{10}{12}}}
+\setbeamerfont{title page subtitle}{size={\fontsize{7}{9}}}
+\setbeamerfont{title page additional}{size={\fontsize{5}{7}}}
+\setbeamertemplate{title page}{
+\begin{beamercolorbox}[wd=\paperwidth]{}
+	\inserttitlegraphic
+\end{beamercolorbox}
+\begin{columns}[b]
+\begin{column}{.4\paperwidth}
+\begin{beamercolorbox}{}
+	\usebeamerfont{title page additional}%
+	\insertauthor\hspace{0.5em}\textbar\hspace{0.5em}%
+	\linebreak[0]\insertemail%
+	\linebreak[0]\insertdate\hspace{0.5em}\textbar\hspace{0.5em}%
+	\linebreak[0]\insertinstitute%
+	\vspace{3mm}%
+\end{beamercolorbox}%
+\end{column}
+\begin{column}{.5\paperwidth}
+\begin{beamercolorbox}[sep=3mm]{}
+	\usebeamerfont{title page title}\usebeamercolor[fg]{title}\inserttitle\\
+	\vspace{1mm}
+	\usebeamerfont{title page subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle
+\end{beamercolorbox}%
+\end{column}
+\end{columns}
+}
+
+%Edit your data here
+\title[Title]{Title}
+\subtitle[Masterarbeit Proposal]{Masterarbeit Proposal}
+\author[Vorname Nachname]{Vorname Nachname}
+%\email{jan-patrick.elsholz@uni-ulm.de}
+\date[23.07.2013]{23.07.2013}
+\titlegraphic{
+	\hspace{74mm}\includegraphics[width=50mm]{img/logo_100_Pant_RGB}\\
+	\vspace{3mm}
+	\includegraphics[width=\paperwidth]{img/startbild1}
+}
+\institute[Institut~f\"ur~Organisation und Management von Informationssystemen]{Institut~f\"ur~Organisation und Management von Informationssystemen}
+
+\begin{document}
+
+%% Titelbild
+\frame[plain]{\titlepage}
+
+\begin{frame}[fragile]{First Slide}
+...
+\end{frame}
+
+\begin{frame}[fragile]{}
+    \center
+    Vielen Dank!
+    \vfill
+\end{frame}
+
+\end{document}

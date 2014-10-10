@@ -1,0 +1,219 @@
+\documentclass[BCOR20mm,DIV14,twoside,10pt,headinclude,footexclude,bibtotoc,liststotoc]{scrbook}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage[final]{pdfpages}
+\usepackage{enumitem}
+
+\titlehead{
+\centering
+\textbf{Universität Ulm}\\
+Fakultät für Ingenieurwissenschaften und Informatik\\
+Institut für Organisation und Management von Informationssystemen
+}
+
+\subject{
+    Masterarbeit\\
+    \footnotesize
+    im Studiengang Informatik
+}
+
+\makeatletter
+\title{Title} \let\thetitle\@title
+\author{Vorname Nachname} \let\theauthor\@author
+\newcommand\matrikelnr{123456}
+\makeatother
+
+\date{
+\footnotesize vorgelegt am\\
+\normalsize Januar 2014
+}
+
+\publishers{%
+\textbf{Gutachter}\\
+Prof. Dr. Stefan Wesner\\
+}
+
+% Fonts {{{
+\usepackage{helvet}             % Helvetica (eig. Nimbus Sans) Klon
+\usepackage[sc]{mathpazo}       % Serif Font fuer Texte
+\usepackage{microtype}          % Besseres Kerning, weniger Trennungen
+% }}}
+
+% Packages {{{
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{ccicons}
+
+\usepackage{natbib}
+\setcitestyle{square,numbers,comma,sort}
+% }}}
+
+% Bildunterschriften {{{
+\usepackage{caption}   % Sans-Serif Font fuer Bildunterschriften
+\captionsetup{labelfont={sf,bf},font=sf}
+\usepackage[sf,bf,SF]{subfigure}
+% }}}
+
+% Bilder {{{
+\usepackage{tikz}
+% }}}
+
+% Satzspiegel {{{
+\renewcommand{\baselinestretch}{1.10}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{\baselineskip}
+\widowpenalty10000
+\clubpenalty10000
+% }}}
+
+% Ueberschriftstiefe im TOC
+\setcounter{tocdepth}{2}
+
+% Literaturverzeichnis
+\bibliographystyle{dinat}
+
+% Kopf- und Fusszeilen {{{
+\usepackage{scrpage2}
+\pagestyle{scrheadings}
+\clearscrheadfoot
+\setkomafont{pagehead}{\sffamily}
+\automark[section]{chapter}
+\ohead{\headmark}
+\ofoot{\pagemark}
+\setheadsepline{.4pt}
+% }}}
+
+% PDF Eigenschaften {{{
+\makeatletter
+ \usepackage[pdftex,
+ 	unicode=true,
+ 	colorlinks=true,
+ 	linkcolor=black,
+ 	citecolor=black,
+ 	urlcolor=black,
+ 	pdfauthor={\@author}
+ ]{hyperref}
+\makeatother
+% }}}
+
+% Nuetzliche Befehle {{{
+\newcommand{\etal}{\emph{et\,al.}}
+\newtheorem{defn}{Definition}[chapter]
+\newtheorem{thm}{Satz}[section]
+% }}}
+
+\hyphenation{%
+Fahr-zeug-zu-In-fra-struk-tur-Kom-mu-ni-ka-ti-on
+}
+
+
+\begin{document}
+
+\frontmatter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\maketitle
+\thispagestyle{empty}
+
+\newlength{\backup}
+\setlength{\backup}{\headheight}
+%\setlength{\headheight}{42mm}
+
+\includegraphics[height=1.8cm]{images/logo_100_sw_bildmarke}
+\hfill
+\includegraphics[height=1.8cm]{images/logo_100_sw_wortmarke}\\[1em]
+
+{\footnotesize
+\hspace*{10.85cm}{\bfseries Fakultät für\\
+\hspace*{10.85cm}Ingenieurwissenschaften\\
+\hspace*{10.85cm}und Informatik}\\
+\hspace*{10.85cm}Institut für Organisation und\\
+\hspace*{10.85cm}Management von Informations-
+\hspace*{10.85cm}systemen\\[1em]
+\hspace*{10.85cm}Januar 2014\\[6em]
+}
+{\bfseries \huge Title of Thesis\\
+}\\[0.5em]
+{\large Masterarbeit an der Universität Ulm}\\[1em]
+OMI-20XX-M/B-XX\\[4em]
+
+%{\large \bfseries ENTWURF: \today}
+%\\[2em]
+
+{\large \bfseries Vorgelegt von:}\\                     
+\theauthor \\[2em]
+{\large \bfseries Gutachter:}\\                     
+Prof. Dr. Stefan Wesner\\
+\\[2em]
+{\large \bfseries Betreuer:}\\ 
+Dr. Jörg Domaschka\\
+
+
+\newpage
+\setlength{\headheight}{\backup}
+
+
+\thispagestyle{empty}
+
+{% impressum
+  \newpage
+  \small
+  \flushleft
+  \mbox{}\\\vspace{180mm}
+
+  Fassung \today \\
+  {\normalsize \copyright~2014 \theauthor}\\
+  %
+This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 2.0 License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/2.0/de/ or send a letter to Creative Commons, 543 Howard Street, 5th Floor, San Francisco, California, 94105, USA. \\
+  %
+  Satz: PDF-\LaTeXe
+}
+
+
+\pagestyle{scrheadings}
+
+\clearscrheadfoot
+\ohead{\headmark}
+\cfoot[\pagemark]{\pagemark}
+
+\input{chapters/0_abstract}
+
+\tableofcontents
+
+\mainmatter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{chapters/1_einleitung}
+% ...
+
+
+\backmatter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\null\cleardoublepage
+
+%\cite{*}
+%\bibliographystyle{dinat} %first referenced
+\bibliography{../literature/references.bib}
+
+\cleardoublepage
+\clearscrheadfoot
+\ihead{Name: \theauthor}
+\ohead{Matrikelnummer: \matrikelnr}
+\cfoot{\pagemark}
+
+\minisec{Erklärung}
+
+Ich, \theauthor, Matrikelnummer \matrikelnr, erkläre, dass ich die Arbeit
+selbständig verfasst und keine anderen als die angegebenen Quellen und
+Hilfsmittel verwendet habe.
+
+\vspace{2cm}
+
+Ulm, den \dotfill
+
+\hspace{10cm} {\footnotesize \theauthor}
+
+\end{document}
