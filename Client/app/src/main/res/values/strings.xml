@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Client</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_menu">RoboSoccer</string>
-    <string name="title_activity_main_activity__wheel">MainActivity_Wheel</string>
-    <string name="game_view">Game</string>
-</resources>
