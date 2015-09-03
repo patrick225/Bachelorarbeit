@@ -16,6 +16,7 @@ public class TCPConnectionHandler extends Channel {
 
 	public void setSocket(Socket socket) {
 		this.socket = socket;
+		this.ip = socket.getInetAddress().toString();
 		new Thread(this).start();
 	}
 

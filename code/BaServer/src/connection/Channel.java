@@ -10,8 +10,9 @@ public abstract class Channel implements Runnable {
 	public static final int PORT_CLIENT = 55055;
 	public static final int PORT_ROBOT = 44044;
 	
-	public static String IP_ROBOT1 = "134.60.168.114";
-	public static String IP_ROBOT2 = "134.60.168.115";
+	public static String IP_ROBOT1 = "134.60.130.47";
+	public static String IP_ROBOT2 = "134.60.145.165";
+	protected String ip;
 	
 	protected boolean running = false;
 	
@@ -30,6 +31,10 @@ public abstract class Channel implements Runnable {
 	
 	public void unregisterMessageListener() {
 		this.messageListener = null;
+	}
+	
+	public String getIp() {
+		return ip.replace("/", "");
 	}
 	
 	public abstract void sendMessage(byte[] data);

@@ -1,5 +1,7 @@
 package connection;
 
+import java.util.HashMap;
+
 
 
 public class ConnectionManager {
@@ -28,11 +30,14 @@ public class ConnectionManager {
 	private boolean player1Ready = false;
 	private boolean player2Ready = false;
 	
+	
 
 	private ConnectionManager() {
 		
+		initDevice(CHANNEL_CLIENT2, PROT_TCP);
 		initDevice(CHANNEL_CLIENT1, PROT_TCP);
-		initDevice(CHANNEL_ROBOT1, PROT_TCP);
+		initDevice(CHANNEL_ROBOT2, PROT_UDP);
+		initDevice(CHANNEL_ROBOT1, PROT_UDP);
 	}
 	
 	public static ConnectionManager getInstance() {
@@ -58,10 +63,10 @@ public class ConnectionManager {
 				public void stateChanged(Channel who, int state) {
 
 					if (state == STATE_CONNECTED) {
-						channels[device] = who;
+						setChannel(device, who);
 					}
 					if (state == STATE_DISCONNECTED) {
-						channels[device] = null;
+						setChannel(device, null);
 						initDevice(device, PROT_TCP);
 					}
 					
@@ -86,10 +91,10 @@ public class ConnectionManager {
 				public void stateChanged(Channel who, int state) {
 					
 					if (state == STATE_CONNECTED) {
-						channels[device] = who;
+						setChannel(device, who);
 					}
 					if (state == STATE_DISCONNECTED) {
-						channels[device] = null;
+						setChannel(device, null);
 						initDevice(device, PROT_UDP);
 					}
 					
@@ -100,12 +105,26 @@ public class ConnectionManager {
 			});
 			if (device == CHANNEL_CLIENT1 || device == CHANNEL_CLIENT2)
 				udpConnector.connectHandler(udp, Channel.PORT_CLIENT);
-			if (device == CHANNEL_ROBOT1 || device == CHANNEL_ROBOT2)
+			if (device == CHANNEL_ROBOT1 || device == CHANNEL_ROBOT2) {
 				udpConnector.connectHandler(udp, Channel.PORT_ROBOT);
+			}
+			
 		}
 		
 	}
-
+	
+	
+	private void setChannel(int device, Channel channel) {
+				
+		if (channel != null && channel.getIp().equals(Channel.IP_ROBOT1)) {
+			channels[CHANNEL_ROBOT1] = channel;
+		}
+		else if (channel != null && channel.getIp().equals(Channel.IP_ROBOT2)) {
+			channels[CHANNEL_ROBOT2] = channel;
+		}else {
+			channels[device] = channel;
+		}
+	}
 	
 	
 	public void registerPlayerReadyListener(OnPlayerReady playerListener) {

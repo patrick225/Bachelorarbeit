@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Stack;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 
 public class UDPSocketProvider {
 
@@ -19,8 +22,8 @@ public class UDPSocketProvider {
 	private static UDPSocketProvider instance;
 	
 	
-	private static HashMap<SocketAddress, UDPConnectionHandler> mapIncoming;
-	private static HashMap<UDPConnectionHandler, SocketAddress> mapOutgoing;
+	private static HashMap<Device, UDPConnectionHandler> mapIncoming;
+	private static HashMap<UDPConnectionHandler, Device> mapOutgoing;
 	
 	private static Stack<UDPConnectionHandler> stackClient;
 	private static Stack<UDPConnectionHandler> stackRobot;
@@ -56,11 +59,15 @@ public class UDPSocketProvider {
 	
 	public void send(UDPConnectionHandler handler, byte[] data) throws IOException  {
 		
-		SocketAddress device = mapOutgoing.get(handler);
-		System.out.println(device);
-		DatagramPacket packet = new DatagramPacket(data, data.length, device);
+		Device device = mapOutgoing.get(handler);
+		DatagramPacket packet = new DatagramPacket(data, data.length, device.ip, device.port);
+		System.out.println("address:" + packet.getSocketAddress());
 		
-		sendSocket.send(packet);
+		try {
+			sendSocket.send(packet);
+		} catch (Exception e)  {
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -77,20 +84,18 @@ public class UDPSocketProvider {
 		public void run() {
 
 			while(true) {
-				byte[] data = new byte[Channel.PACKETSIZE_CLIENT];
+				byte[] data = new byte[1000];
 				DatagramPacket packet = new DatagramPacket(data, data.length);
 				try {
 					
 					socketClient.receive(packet);
-					SocketAddress device = packet.getSocketAddress();
-					
+					Device device = new Device(socketClient.getLocalPort(), packet.getAddress());					
 					if (mapIncoming.containsKey(device)) {
 						mapIncoming.get(device).incomingMessage(packet);
+						
 					}
 					else if (!stackClient.empty()) {
-						UDPConnectionHandler handler = stackClient.pop();
-						mapIncoming.put(device, handler);
-						mapOutgoing.put(handler, device);
+						UDPConnectionHandler handler = newDevice(packet);
 						handler.incomingMessage(packet);
 					}
 					
@@ -102,17 +107,41 @@ public class UDPSocketProvider {
 		}
 	};
 	
+	
+	private UDPConnectionHandler newDevice(DatagramPacket packet) {
+		
+		byte[] data = packet.getData();
+		Device device;
+		JSONParser parser = new JSONParser();
+		try {
+			JSONObject obj = (JSONObject) parser.parse(new String(data).trim());
+
+			device = new Device(packet.getPort(), obj.get("ip").toString());
+			
+		} catch (Exception e) {
+			
+			device = new Device(packet.getPort(), packet.getAddress());
+		}
+		
+		
+		UDPConnectionHandler handler = stackClient.pop();
+		mapIncoming.put(device, handler);
+		mapOutgoing.put(handler, device);
+		
+		return handler;
+	}
+	
 	private Runnable readRobot = new Runnable() {
 		
 		@Override
 		public void run() {
 
 			while (true) {
-				byte[] data = new byte[Channel.PACKETSIZE_CLIENT];
+				byte[] data = new byte[Channel.PACKETSIZE_ROBOT];
 				DatagramPacket packet = new DatagramPacket(data, data.length);
 				try {
 					socketRobot.receive(packet);
-					SocketAddress device = packet.getSocketAddress();
+					Device device = new Device(packet.getPort(), packet.getAddress());
 					
 					if (mapIncoming.containsKey(device)) {
 						mapIncoming.get(device).incomingMessage(packet);
@@ -129,5 +158,64 @@ public class UDPSocketProvider {
 			}
 		}
 	};	
+	
+	
+	public Device getDevice(UDPConnectionHandler handler) {
+		return mapOutgoing.get(handler);
+	}
 
+	
+	public class Device {
+		
+		public int port;
+		public InetAddress ip;
+		
+		public Device(int port, InetAddress ip) {
+			this.port = port;
+			this.ip = ip;
+		}
+		
+		public Device(int port, String ip) {
+			this.port = port;
+			try {
+				this.ip = InetAddress.getByName(ip);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		@Override
+	    public int hashCode() {
+			
+			//quersumme
+			String values = ip.toString().replaceAll( "[^\\d]", "" );
+			int sum = 0;
+			for (int i = 0; i < values.length(); i++) {
+				sum += Integer.valueOf(values.charAt(i));
+			}
+					
+			return sum;
+		}
+		
+		 
+		@Override
+		public boolean equals(Object device) {
+			
+			if (!(device instanceof Device) || device == null) {
+				return false;
+			}
+			Device dev = (Device) device;
+			
+			if (dev.ip.equals(this.ip)) 
+				return true;
+			
+			return false;
+			
+		}
+			
+		
+		
+	}
+	
+	
 }

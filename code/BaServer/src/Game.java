@@ -48,12 +48,20 @@ public class Game {
 					}
 					break;
 				case 2:
-
+					if (state) {
+						client2 = cm.getChannelClient2();
+						robot2 = cm.getChannelRobot2();
+						client2.registerMessageListener(messageListenerClient2);
+						robot2.registerMessageListener(messageListenerRobot2);
+					} else {
+						client2.unregisterMessageListener();
+						robot2.unregisterMessageListener();
+					}
 				}
 			}
 		});
 		
-		gd = new GoalDetector(goalListener);
+//		gd = new GoalDetector(goalListener);
 
 	}
 	
@@ -72,6 +80,18 @@ public class Game {
 		cstat.setCountP1(scorePlayer1);
 		cstat.setCountP2(scorePlayer2);
 		client1.sendMessage(cstat.getBytes());
+	}
+	
+	private void forwardPlayer2(byte[] data) {
+		robot2.sendMessage(new RobotCommand(data).getBytes());
+	}
+	
+	private void statusPlayer2(RobotStatus status) {
+		ControllerStatus cstat = new ControllerStatus();
+		cstat.setAkku(status.getAkku());
+		cstat.setCountP1(scorePlayer1);
+		cstat.setCountP2(scorePlayer2);
+		client2.sendMessage(cstat.getBytes());
 	}
 	
 	
@@ -100,6 +120,22 @@ public class Game {
 		@Override
 		public void messageReceived(byte[] data) {
 			statusPlayer1(new RobotStatus(data));
+		}
+	};
+	
+OnMessageReceived messageListenerClient2 = new OnMessageReceived() {
+		
+		@Override
+		public void messageReceived(byte[] data) {
+			forwardPlayer2(data);
+		}
+	};
+	
+	OnMessageReceived messageListenerRobot2 = new OnMessageReceived() {
+		
+		@Override
+		public void messageReceived(byte[] data) {
+			statusPlayer2(new RobotStatus(data));
 		}
 	};
 	

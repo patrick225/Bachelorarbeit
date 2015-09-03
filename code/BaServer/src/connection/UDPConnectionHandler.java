@@ -2,7 +2,6 @@ package connection;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 
 public class UDPConnectionHandler extends Channel {
 
@@ -12,6 +11,7 @@ public class UDPConnectionHandler extends Channel {
 		super(stateListener);
 
 		socketProv = UDPSocketProvider.getInstance();
+		
 
 	}
 
@@ -39,18 +39,21 @@ public class UDPConnectionHandler extends Channel {
 		first = true;
 	}
 
-	static boolean first = true;
+	boolean first = true;
 	public void incomingMessage(DatagramPacket packet) {
 
 		if (first) {
 			cc = new ConnectionControl(this);
 			cc.startControl();
+			this.ip = socketProv.getDevice(this).ip.toString();
 			stateListener.stateChanged(this, ConnectionManager.STATE_CONNECTED);
 			first = false;
 		}
 		cc.update();
+		
 		if (messageListener != null) {
 			messageListener.messageReceived(packet.getData());
+			
 		}
 
 	}

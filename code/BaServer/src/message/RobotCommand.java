@@ -9,12 +9,12 @@ public class RobotCommand {
 	
 	public RobotCommand() {
 
-		command[0] = (byte) 0xFF;
+		command[0] = (byte) 0x00;
 		command[1] = (byte) 0x00;
 		command[2] = (byte) 0x00;
 		command[3] = (byte) 0x00;
 		command[4] = (byte) 0x00;
-		command[5] = (byte) 0x00;
+		command[5] = (byte) 0xFF;
 	}
 	
 	public RobotCommand(boolean camera, boolean kick, int motorLeft, int motorRight) {
