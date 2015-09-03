@@ -71,9 +71,11 @@ public class TCPClient extends Channel {
                     state.setCountP1(buffer[1]);
                     state.setCountP2(buffer[2]);
 
-                    Message msg = Message.obtain();
-                    msg.obj = state;
-                    stateHandler.sendMessage(msg);
+                    if (stateHandler != null) {
+                        Message msg = Message.obtain();
+                        msg.obj = state;
+                        stateHandler.sendMessage(msg);
+                    }
 
                 }
 
@@ -147,7 +149,7 @@ public class TCPClient extends Channel {
         protected String doInBackground(Void... params) {
 
             if (true)
-                return "134.60.137.199";
+                return "134.60.145.193";
             try {
                 InetAddress host = InetAddress.getByName(getBroadcastIp());
                 socket = new DatagramSocket(null);
