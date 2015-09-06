@@ -1,3 +1,6 @@
+import java.util.Timer;
+import java.util.TimerTask;
+
 import message.ControllerStatus;
 import message.RobotCommand;
 import message.RobotStatus;
@@ -15,17 +18,22 @@ public class Game {
 	ConnectionManager cm;
 	GoalDetector gd;
 	
-	Channel client1;
-	Channel robot1;
+	volatile Channel client1;
+	volatile Channel robot1;
 	
-	Channel client2;
-	Channel robot2;
+	volatile Channel client2;
+	volatile Channel robot2;
 	
+	volatile RobotCommand commandP1;
+	volatile RobotCommand commandP2;
+	
+	ForwardTask forwardP1;
+	ForwardTask forwardP2;
 	
 	
 	
 	public Game() {
-		
+				
 		scorePlayer1 = 0;
 		scorePlayer2 = 0;
 		
@@ -42,9 +50,15 @@ public class Game {
 						robot1 = cm.getChannelRobot1();
 						client1.registerMessageListener(messageListenerClient1);
 						robot1.registerMessageListener(messageListenerRobot1);
+						commandP1 = new RobotCommand();
+						forwardP1 = new ForwardTask(1);
+						forwardP1.start();
+						
 					} else {
 						client1.unregisterMessageListener();
 						robot1.unregisterMessageListener();
+						forwardP1.cancel();
+
 					}
 					break;
 				case 2:
@@ -53,9 +67,15 @@ public class Game {
 						robot2 = cm.getChannelRobot2();
 						client2.registerMessageListener(messageListenerClient2);
 						robot2.registerMessageListener(messageListenerRobot2);
+						commandP2 = new RobotCommand();
+						forwardP2 = new ForwardTask(2);
+						forwardP2.start();
+
 					} else {
 						client2.unregisterMessageListener();
 						robot2.unregisterMessageListener();
+						forwardP2.start();
+
 					}
 				}
 			}
@@ -111,7 +131,7 @@ public class Game {
 		
 		@Override
 		public void messageReceived(byte[] data) {
-			forwardPlayer1(data);
+			commandP1 = new RobotCommand(data);
 		}
 	};
 	
@@ -127,7 +147,7 @@ OnMessageReceived messageListenerClient2 = new OnMessageReceived() {
 		
 		@Override
 		public void messageReceived(byte[] data) {
-			forwardPlayer2(data);
+			commandP2 = new RobotCommand(data);
 		}
 	};
 	
@@ -139,5 +159,36 @@ OnMessageReceived messageListenerClient2 = new OnMessageReceived() {
 		}
 	};
 	
+	
+	private class ForwardTask extends TimerTask {
+
+		private int sendRate = 100;
+		private int player;
+		
+		Timer timer = new Timer(true);
+		
+		public ForwardTask(int player) {
+			
+			this.player = player;
+		}
+		
+		
+		@Override
+		public void run() {
+			if (player == 1) {
+				robot1.sendMessage(commandP1.getBytes());
+			}
+			if (player == 2) {
+				robot2.sendMessage(commandP2.getBytes());
+			}
+			
+			System.out.println("forward player" + player);
+		}
+		
+		public void start() {
+			timer.scheduleAtFixedRate(this, 0, sendRate);
+		}
+		
+	}
 
 }
