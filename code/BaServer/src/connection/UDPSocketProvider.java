@@ -89,7 +89,7 @@ public class UDPSocketProvider {
 				try {
 					
 					socketClient.receive(packet);
-					Device device = new Device(socketClient.getLocalPort(), packet.getAddress());					
+					Device device = getDeviceFromPacket(packet);
 					if (mapIncoming.containsKey(device)) {
 						mapIncoming.get(device).incomingMessage(packet);
 						
@@ -106,6 +106,24 @@ public class UDPSocketProvider {
 			
 		}
 	};
+	
+	
+	private Device getDeviceFromPacket(DatagramPacket packet) {
+		
+		Device device;
+		JSONParser parser = new JSONParser();
+		try {
+			JSONObject obj = (JSONObject) parser.parse(new String(packet.getData()).trim());
+
+			device = new Device(packet.getPort(), obj.get("ip").toString());
+			
+		} catch (Exception e) {
+			
+			device = new Device(packet.getPort(), packet.getAddress());
+		}
+		
+		return device;
+	}
 	
 	
 	private UDPConnectionHandler newDevice(DatagramPacket packet) {
