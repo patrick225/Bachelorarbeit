@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>RoboControl</title>
+        <meta charset="windows-1252">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <script>
+            
+            var lastKeyDown;
+            var heldKeys = {};
+            heldKeys[37] = 0;
+            heldKeys[38] = 0;
+            heldKeys[39] = 0;
+            heldKeys[40] = 0;
+            shot = 0;
+            
+            document.onkeyup = function(event) {
+                
+                if (event.keyCode < 41 && event.keyCode > 36) {                   
+                    heldKeys[event.keyCode] = 0;
+                }
+                if (event.keyCode == 32) {
+                    shot = 1;
+                }
+                
+                send();  
+                shot = 0;
+            }
+            
+            document.onkeydown = function(event) {
+                
+                if (heldKeys[event.keyCode]) return;
+                
+                if (event.keyCode < 41 && event.keyCode > 36) {
+                    heldKeys[event.keyCode] = 1;
+                    lastKeyDown = event;
+                }             
+                
+                send();                                
+            }
+
+            function send() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    //do nothing
+                }
+                var str = heldKeys[37]  + " " + heldKeys[38]  + " " + heldKeys[39]  + " " + heldKeys[40] + " " + shot;
+                
+                xmlhttp.open("GET", "send.php?dir=" + str, true);
+                xmlhttp.send();
+            }
+        </script>
+    </head>
+    <body>
+        
+        <button type="button" name="forward">^</button>
+        <button type="button" name="backward">v</button>
+        <button type="button" name="forward"><</button>
+        <button type="button" name="forward">></button>
+    
+        
+    </body>
+</html>
+ 
