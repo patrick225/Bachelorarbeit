@@ -77,16 +77,15 @@ public class WebsocketSocket extends WebSocketAdapter {
     
     private void notifyListener(String message) {
     	
-//    	if (messageListener != null) {
+    	if (messageListener != null) {
 	    	JSONParser parser = new JSONParser();
 			try {
 				JSONObject obj = (JSONObject) parser.parse(message);
-				System.out.println(new ControllerCommand(obj).toString());
-//				messageListener.messageReceived(this, new ControllerCommand(obj));
+				messageListener.messageReceived(this, new ControllerCommand(obj));
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-//    	}
+    	}
     }
 }
