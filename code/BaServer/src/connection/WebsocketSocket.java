@@ -1,5 +1,7 @@
 package connection;
 
+import message.ControllerCommand;
+
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.json.simple.JSONObject;
@@ -79,7 +81,7 @@ public class WebsocketSocket extends WebSocketAdapter {
 	    	JSONParser parser = new JSONParser();
 			try {
 				JSONObject obj = (JSONObject) parser.parse(message);
-				messageListener.messageReceived(this, obj);
+				messageListener.messageReceived(this, new ControllerCommand(obj));
 				
 			} catch (Exception e) {
 				e.printStackTrace();

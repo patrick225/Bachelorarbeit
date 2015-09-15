@@ -1,8 +1,8 @@
 package connection;
 
-import org.json.simple.JSONObject;
+import message.ControllerCommand;
 
 public interface OnControllerMessageReceived {
 
-	public void messageReceived(WebsocketSocket controller, JSONObject data);
+	public void messageReceived(WebsocketSocket controller, ControllerCommand command);
 }

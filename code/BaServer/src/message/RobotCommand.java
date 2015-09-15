@@ -1,5 +1,7 @@
 package message;
 
+import org.json.simple.JSONObject;
+
 
 public class RobotCommand {
 
@@ -40,7 +42,9 @@ public class RobotCommand {
 	}
 	
 
-	public RobotCommand(byte[] data) {
+	public RobotCommand(ControllerCommand controllerCommand) {
+		
+		byte[] data = controllerCommand.getBytes();
 		
 		command[2] = data[2];
 		command[3] = data[0];
