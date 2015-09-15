@@ -9,6 +9,7 @@ public class WebsocketServlet extends WebSocketServlet {
 	
     @Override
     public void configure(WebSocketServletFactory factory) {
+    	factory.getPolicy().setIdleTimeout(0);
         factory.register(WebsocketSocket.class);
     }
 

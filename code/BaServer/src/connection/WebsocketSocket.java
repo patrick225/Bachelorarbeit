@@ -38,9 +38,10 @@ public class WebsocketSocket extends WebSocketAdapter {
     public void onWebSocketText(String message)
     {
         super.onWebSocketText(message);
-        
-        System.out.println("Received TEXT message: " + message);
-        notifyListener(message);
+   
+        if (messageListener != null) {
+        	notifyListener(message);
+        }
         
     }
     
@@ -77,15 +78,13 @@ public class WebsocketSocket extends WebSocketAdapter {
     
     private void notifyListener(String message) {
     	
-    	if (messageListener != null) {
-	    	JSONParser parser = new JSONParser();
-			try {
-				JSONObject obj = (JSONObject) parser.parse(message);
-				messageListener.messageReceived(this, new ControllerCommand(obj));
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-    	}
+    	JSONParser parser = new JSONParser();
+		try {
+			JSONObject obj = (JSONObject) parser.parse(message);
+			messageListener.messageReceived(this, new ControllerCommand(obj));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }
