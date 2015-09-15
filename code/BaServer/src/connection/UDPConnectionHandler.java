@@ -52,7 +52,7 @@ public class UDPConnectionHandler extends Channel {
 		cc.update();
 		
 		if (messageListener != null) {
-			messageListener.messageReceived(packet.getData());
+			messageListener.messageReceived(this, packet.getData());
 			
 		}
 

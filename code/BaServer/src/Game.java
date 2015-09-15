@@ -4,10 +4,16 @@ import java.util.TimerTask;
 import message.ControllerStatus;
 import message.RobotCommand;
 import message.RobotStatus;
+
+import org.json.simple.JSONObject;
+
 import connection.Channel;
 import connection.ConnectionManager;
-import connection.OnMessageReceived;
+import connection.OnControllerMessageReceived;
 import connection.OnPlayerReady;
+import connection.OnRobotMessageReceived;
+import connection.UDPConnectionHandler;
+import connection.WebsocketSocket;
 
 
 public class Game {
@@ -18,10 +24,10 @@ public class Game {
 	ConnectionManager cm;
 	GoalDetector gd;
 	
-	volatile Channel client1;
+	volatile WebsocketSocket controller1;
 	volatile Channel robot1;
 	
-	volatile Channel client2;
+	volatile WebsocketSocket controller2;
 	volatile Channel robot2;
 	
 	volatile RobotCommand commandP1;
@@ -46,16 +52,16 @@ public class Game {
 				switch (player) {
 				case 1:
 					if (state) {
-						client1 = cm.getChannelClient1();
+						controller1 = cm.getController1();
 						robot1 = cm.getChannelRobot1();
-						client1.registerMessageListener(messageListenerClient1);
-						robot1.registerMessageListener(messageListenerRobot1);
+						controller1.registerMessageListener(messageListenerController);						
+						robot1.registerMessageListener(messageListenerRobot);
 						commandP1 = new RobotCommand();
 						forwardP1 = new ForwardTask(1);
 						forwardP1.start();
 						
 					} else {
-						client1.unregisterMessageListener();
+						controller1.unregisterMessageListener();
 						robot1.unregisterMessageListener();
 						forwardP1.cancel();
 
@@ -63,16 +69,16 @@ public class Game {
 					break;
 				case 2:
 					if (state) {
-						client2 = cm.getChannelClient2();
+						controller2 = cm.getController2();
 						robot2 = cm.getChannelRobot2();
-						client2.registerMessageListener(messageListenerClient2);
-						robot2.registerMessageListener(messageListenerRobot2);
+						controller2.registerMessageListener(messageListenerController);
+						robot2.registerMessageListener(messageListenerRobot);
 						commandP2 = new RobotCommand();
 						forwardP2 = new ForwardTask(2);
 						forwardP2.start();
 
 					} else {
-						client2.unregisterMessageListener();
+						controller2.unregisterMessageListener();
 						robot2.unregisterMessageListener();
 						forwardP2.start();
 
@@ -94,25 +100,25 @@ public class Game {
 		robot1.sendMessage(new RobotCommand(data).getBytes());
 	}
 	
-	private void statusPlayer1(RobotStatus status) {
-		ControllerStatus cstat = new ControllerStatus();
-		cstat.setAkku(status.getAkku());
-		cstat.setCountP1(scorePlayer1);
-		cstat.setCountP2(scorePlayer2);
-		client1.sendMessage(cstat.getBytes());
-	}
+//	private void statusPlayer1(RobotStatus status) {
+//		ControllerStatus cstat = new ControllerStatus();
+//		cstat.setAkku(status.getAkku());
+//		cstat.setCountP1(scorePlayer1);
+//		cstat.setCountP2(scorePlayer2);
+//		controller1.sendMessage(cstat.getBytes());
+//	}
 	
 	private void forwardPlayer2(byte[] data) {
 		robot2.sendMessage(new RobotCommand(data).getBytes());
 	}
 	
-	private void statusPlayer2(RobotStatus status) {
-		ControllerStatus cstat = new ControllerStatus();
-		cstat.setAkku(status.getAkku());
-		cstat.setCountP1(scorePlayer1);
-		cstat.setCountP2(scorePlayer2);
-		client2.sendMessage(cstat.getBytes());
-	}
+//	private void statusPlayer2(RobotStatus status) {
+//		ControllerStatus cstat = new ControllerStatus();
+//		cstat.setAkku(status.getAkku());
+//		cstat.setCountP1(scorePlayer1);
+//		cstat.setCountP2(scorePlayer2);
+//		controller2.sendMessage(cstat.getBytes());
+//	}
 	
 	
 	OnGoalDetected goalListener = new OnGoalDetected() {
@@ -127,37 +133,25 @@ public class Game {
 		}
 	};
 	
-	OnMessageReceived messageListenerClient1 = new OnMessageReceived() {
+	
+	OnControllerMessageReceived messageListenerController = new OnControllerMessageReceived() {
 		
 		@Override
-		public void messageReceived(byte[] data) {
-			commandP1 = new RobotCommand(data);
+		public void messageReceived(WebsocketSocket controller, JSONObject data) {
+
+			
 		}
 	};
 	
-	OnMessageReceived messageListenerRobot1 = new OnMessageReceived() {
+	OnRobotMessageReceived messageListenerRobot = new OnRobotMessageReceived() {
 		
 		@Override
-		public void messageReceived(byte[] data) {
-			statusPlayer1(new RobotStatus(data));
+		public void messageReceived(UDPConnectionHandler robot, byte[] data) {
+
+		
 		}
 	};
 	
-OnMessageReceived messageListenerClient2 = new OnMessageReceived() {
-		
-		@Override
-		public void messageReceived(byte[] data) {
-			commandP2 = new RobotCommand(data);
-		}
-	};
-	
-	OnMessageReceived messageListenerRobot2 = new OnMessageReceived() {
-		
-		@Override
-		public void messageReceived(byte[] data) {
-			statusPlayer2(new RobotStatus(data));
-		}
-	};
 	
 	
 	private class ForwardTask extends TimerTask {

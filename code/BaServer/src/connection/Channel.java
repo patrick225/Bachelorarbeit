@@ -16,7 +16,7 @@ public abstract class Channel implements Runnable {
 	
 	protected boolean running = false;
 	
-	protected OnMessageReceived messageListener;
+	protected OnRobotMessageReceived messageListener;
 	protected StateListener stateListener;
 	
 	protected ConnectionControl cc;
@@ -25,7 +25,7 @@ public abstract class Channel implements Runnable {
 		this.stateListener = stateListener;
 	}
 	
-	public void registerMessageListener(OnMessageReceived messageListener) {
+	public void registerMessageListener(OnRobotMessageReceived messageListener) {
 		this.messageListener = messageListener;
 	}
 	

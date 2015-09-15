@@ -1,12 +1,14 @@
 package connection;
 
-import java.util.HashMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 
 
 
 public class ConnectionManager {
 	
-	private static ConnectionManager instance = null;
+	private static volatile ConnectionManager instance = null;
 
 	public static final int STATE_CONNECTED = 100;
 	public static final int STATE_DISCONNECTED = 200;
@@ -31,20 +33,59 @@ public class ConnectionManager {
 	private boolean player2Ready = false;
 	
 	
+	BiMap<WebsocketSocket, UDPConnectionHandler> mapping;
+	
+	private WebsocketSocket controller1;
+	private WebsocketSocket controller2;
+	
+	private UDPConnectionHandler robot1;
+	private UDPConnectionHandler robot2;
+	
+	
 
 	private ConnectionManager() {
 		
-		initDevice(CHANNEL_CLIENT2, PROT_TCP);
-		initDevice(CHANNEL_CLIENT1, PROT_TCP);
-		initDevice(CHANNEL_ROBOT2, PROT_UDP);
-		initDevice(CHANNEL_ROBOT1, PROT_UDP);
+		mapping = HashBiMap.create();
+		
+		new Thread(new WebsocketServer()).start();		
+		
+//		initDevice(CHANNEL_CLIENT2, PROT_TCP);
+//		initDevice(CHANNEL_CLIENT1, PROT_TCP);
+//		initDevice(CHANNEL_ROBOT2, PROT_UDP);
+//		initDevice(CHANNEL_ROBOT1, PROT_UDP);
 	}
 	
-	public static ConnectionManager getInstance() {
+	public static synchronized ConnectionManager getInstance() {
+		
 		if (instance == null) {
 			instance = new ConnectionManager();
 		}
 		return instance;
+	}
+	
+	public void registerController(WebsocketSocket socket) {
+		
+		if (controller1 == null) {
+			controller1 = socket;
+		} else {
+			controller2 = socket;
+		}
+		
+		printStatus();
+		checkForReadyPlayers();
+	}
+	
+	public void unregisterController(WebsocketSocket socket) {
+		
+		if (socket.equals(controller1)) {
+			controller1 = null;
+		}
+		if (socket.equals(controller2)) {
+			controller2 = null;
+		}
+		
+		printStatus();
+		checkForReadyPlayers();
 	}
 	
 	
@@ -135,25 +176,25 @@ public class ConnectionManager {
 	private void checkForReadyPlayers() {
 				
 		// player1 was not ready, but is now
-		if (!player1Ready && getChannelClient1() != null && getChannelRobot1() != null) {
+		if (!player1Ready && getController1() != null && getChannelRobot1() != null) {
 			playerReadyListener.playerIsReady(1, true);
 			player1Ready = true;
 		}
 		
 		// player1 was ready, but is no more
-		if (player1Ready && !(getChannelClient1() != null && getChannelRobot1() != null)) {
+		if (player1Ready && !(getController1() != null && getChannelRobot1() != null)) {
 			playerReadyListener.playerIsReady(1, false);
 			player1Ready = false;
 		}
 		
 		// player2 was not ready, but is now
-		if (!player2Ready && getChannelClient2() != null && getChannelRobot2() != null) {
+		if (!player2Ready && getController2() != null && getChannelRobot2() != null) {
 			playerReadyListener.playerIsReady(2, true);
 			player2Ready = true;
 		}
 		
 		// player2 was ready, but is no more
-		if (player2Ready && !(getChannelClient2() != null && getChannelRobot2() != null)) {
+		if (player2Ready && !(getController2() != null && getChannelRobot2() != null)) {
 			playerReadyListener.playerIsReady(2, false);
 			player2Ready = false;
 		}
@@ -165,9 +206,9 @@ public class ConnectionManager {
 		System.out.println("------------------");
 		System.out.println("Connections:");
 		System.out.println("Controller1: "
-				+ String.valueOf(getChannelClient1() != null));
+				+ String.valueOf(controller1 != null));
 		System.out.println("Controller2: "
-				+ String.valueOf(getChannelClient2() != null));
+				+ String.valueOf(controller2 != null));
 		System.out.println("Robot1: " 
 				+ String.valueOf(getChannelRobot1() != null));
 		System.out.println("Robot2: " 
@@ -177,12 +218,12 @@ public class ConnectionManager {
 	}
 	
 	
-	public Channel getChannelClient1() {
-		return channels[CHANNEL_CLIENT1];
+	public WebsocketSocket getController1() {
+		return controller1;
 	}
 	
-	public Channel getChannelClient2() {
-		return channels[CHANNEL_CLIENT2];
+	public WebsocketSocket getController2() {
+		return controller2;
 	}
 	
 	public Channel getChannelRobot1() {
@@ -191,6 +232,14 @@ public class ConnectionManager {
 	
 	public Channel getChannelRobot2() {
 		return channels[CHANNEL_ROBOT2];
+	}
+	
+	public UDPConnectionHandler getRobotByController (WebsocketSocket controller) {
+		return mapping.get(controller);
+	}
+	
+	public WebsocketSocket getControllerByRobot (UDPConnectionHandler robot) {
+		return mapping.inverse().get(robot);
 	}
 	
 }

@@ -80,7 +80,7 @@ public class TCPConnectionHandler extends Channel {
 				cc.update();
 
 				if (pack.length != 0 && messageListener != null) {
-					messageListener.messageReceived(pack);
+//					messageListener.messageReceived(pack);
 				}
 			}
 
