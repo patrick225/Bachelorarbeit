@@ -1,8 +1,8 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-import connection.UDPConnectionHandler;
 import message.RobotCommand;
+import connection.UDPConnectionHandler;
 
 
 public class CommandTask extends TimerTask {

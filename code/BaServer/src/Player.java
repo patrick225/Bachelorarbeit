@@ -1,8 +1,5 @@
 import message.ControllerCommand;
 import message.RobotCommand;
-
-import org.json.simple.JSONObject;
-
 import connection.OnControllerMessageReceived;
 import connection.OnRobotMessageReceived;
 import connection.UDPConnectionHandler;
@@ -22,7 +19,6 @@ public class Player {
 	
 	public Player() {
 
-		
 	}
 	
 	

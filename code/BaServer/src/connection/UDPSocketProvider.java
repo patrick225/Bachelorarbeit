@@ -7,11 +7,9 @@ import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.hash.Hashing;
 
 
 public class UDPSocketProvider implements Runnable {

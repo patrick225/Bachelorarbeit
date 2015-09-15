@@ -1,17 +1,5 @@
-import java.util.Timer;
-import java.util.TimerTask;
-
-import message.RobotCommand;
-
-import org.json.simple.JSONObject;
-
-import connection.Channel;
 import connection.ConnectionManager;
-import connection.OnControllerMessageReceived;
 import connection.OnPlayerReady;
-import connection.OnRobotMessageReceived;
-import connection.UDPConnectionHandler;
-import connection.WebsocketSocket;
 
 
 public class Game {
