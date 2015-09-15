@@ -1,9 +1,7 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-import message.ControllerStatus;
 import message.RobotCommand;
-import message.RobotStatus;
 
 import org.json.simple.JSONObject;
 
@@ -25,10 +23,10 @@ public class Game {
 	GoalDetector gd;
 	
 	volatile WebsocketSocket controller1;
-	volatile Channel robot1;
+	volatile UDPConnectionHandler robot1;
 	
 	volatile WebsocketSocket controller2;
-	volatile Channel robot2;
+	volatile UDPConnectionHandler robot2;
 	
 	volatile RobotCommand commandP1;
 	volatile RobotCommand commandP2;
@@ -53,7 +51,7 @@ public class Game {
 				case 1:
 					if (state) {
 						controller1 = cm.getController1();
-						robot1 = cm.getChannelRobot1();
+						robot1 = cm.getRobot2();
 						controller1.registerMessageListener(messageListenerController);						
 						robot1.registerMessageListener(messageListenerRobot);
 						commandP1 = new RobotCommand();
@@ -70,7 +68,7 @@ public class Game {
 				case 2:
 					if (state) {
 						controller2 = cm.getController2();
-						robot2 = cm.getChannelRobot2();
+						robot2 = cm.getRobot2();
 						controller2.registerMessageListener(messageListenerController);
 						robot2.registerMessageListener(messageListenerRobot);
 						commandP2 = new RobotCommand();
@@ -97,7 +95,7 @@ public class Game {
 	}
 	
 	private void forwardPlayer1(byte[] data) {
-		robot1.sendMessage(new RobotCommand(data).getBytes());
+		robot1.send(new RobotCommand(data).getBytes());
 	}
 	
 //	private void statusPlayer1(RobotStatus status) {
@@ -109,7 +107,7 @@ public class Game {
 //	}
 	
 	private void forwardPlayer2(byte[] data) {
-		robot2.sendMessage(new RobotCommand(data).getBytes());
+		robot2.send(new RobotCommand(data).getBytes());
 	}
 	
 //	private void statusPlayer2(RobotStatus status) {
@@ -170,10 +168,10 @@ public class Game {
 		@Override
 		public void run() {
 			if (player == 1) {
-				robot1.sendMessage(commandP1.getBytes());
+				robot1.send(commandP1.getBytes());
 			}
 			if (player == 2) {
-				robot2.sendMessage(commandP2.getBytes());
+				robot2.send(commandP2.getBytes());
 			}
 			
 			System.out.println("forward player" + player);

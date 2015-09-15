@@ -1,7 +1,5 @@
 package connection;
 
-import java.io.IOException;
-
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
 import org.json.simple.JSONObject;

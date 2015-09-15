@@ -1,61 +1,93 @@
 package connection;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.SocketAddress;
 
-public class UDPConnectionHandler extends Channel {
+public class UDPConnectionHandler {
 
 	private UDPSocketProvider socketProv;
+	private ConnectionManager cm;
+	
+	private SocketAddress address;
+	private ConnectionControl cc;
+	
+	OnRobotMessageReceived messageListener;
 
-	public UDPConnectionHandler(StateListener stateListener) {
-		super(stateListener);
+	public UDPConnectionHandler(UDPSocketProvider socketProv) {
 
-		socketProv = UDPSocketProvider.getInstance();
+		this.socketProv = socketProv;
+		address = socketProv.getAddressByHandler(this);
+		cm = ConnectionManager.getInstance();
+		cm.registerRobot(this);
 		
+		
+		cc = new ConnectionControl(this);
+		cc.startControl();
 
 	}
 
-	@Override
-	public void run() {
 
-	}
-
-	@Override
-	public void sendMessage(byte[] data) {
-
-		try {
-			socketProv.send(this, data);
-		} catch (IOException e) {
-			System.out.println("Error in UDPconnectionHandler:sendMessage \n"
-					+ e.getMessage());
-			close();
-		}
-	}
-
-	@Override
-	public synchronized void close() {
-		cc.stopControl();
-		stateListener.stateChanged(this, ConnectionManager.STATE_DISCONNECTED);
-		first = true;
-	}
-
-	boolean first = true;
 	public void incomingMessage(DatagramPacket packet) {
 
-		if (first) {
-			cc = new ConnectionControl(this);
-			cc.startControl();
-			this.ip = socketProv.getDevice(this).ip.toString();
-			stateListener.stateChanged(this, ConnectionManager.STATE_CONNECTED);
-			first = false;
-		}
 		cc.update();
-		
 		if (messageListener != null) {
 			messageListener.messageReceived(this, packet.getData());
-			
 		}
-
 	}
+	
+	
+	public void send(byte[] data) {
+		socketProv.send(this, data);
+	}
+	
+	
+    public void registerMessageListener (OnRobotMessageReceived messageListener) {
+    	this.messageListener = messageListener;
+    }
+    
+    
+    public void unregisterMessageListener () {
+    	this.messageListener = null;
+    }
+    
+    
+    public void onTimeout() {
+    	cm.unregisterRobot(this);
+    	socketProv.unsetRobot(this);
+    }
+    
+    
+	@Override
+	public boolean equals(Object obj) {
+		try {
+			UDPConnectionHandler other = (UDPConnectionHandler) obj;
+			
+			if (other.address.equals(this.address))
+				return true;
+			return false;
+		} catch (NullPointerException e) {
+			return super.equals(obj);
+		}
+	}
+	
+	
+	@Override
+	public int hashCode() {
+		
+		try {
+			int sum = 0;
+			
+			String addrStr = address.toString();
+			for (int i = 0; i < addrStr.length(); i++) {
+				sum += Integer.valueOf(addrStr.charAt(i));
+			}
+		
+			return sum;
+		} catch (NullPointerException e) {
+			return super.hashCode();
+		}
+	}
+	
+	
 
 }

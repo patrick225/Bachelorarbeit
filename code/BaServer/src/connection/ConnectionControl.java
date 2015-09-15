@@ -5,9 +5,9 @@ public class ConnectionControl extends Thread {
 	private volatile boolean running = true;
 	private volatile long lastStatus;
 	public static final long TIMEOUT = 5000;
-	private Channel handler;
+	private UDPConnectionHandler handler;
 	
-	public ConnectionControl(Channel handler) {
+	public ConnectionControl(UDPConnectionHandler handler) {
 		this.handler = handler;
 	}
 	
@@ -17,7 +17,7 @@ public class ConnectionControl extends Thread {
 			long curTime = System.currentTimeMillis();
 			long lastTime = lastStatus;
 			if ((curTime - lastTime) > TIMEOUT) {
-				handler.close();
+				handler.onTimeout();
 				break;
 			}
 			

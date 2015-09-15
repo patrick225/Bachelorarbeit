@@ -1,6 +1,5 @@
 package connection;
 
-import java.net.InetAddress;
 
 public abstract class Channel implements Runnable {
 
