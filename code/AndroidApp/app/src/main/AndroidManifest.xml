@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ControlActivityDifferential"
             android:label="@string/game_view"
             android:screenOrientation="landscape" >
             <intent-filter>
