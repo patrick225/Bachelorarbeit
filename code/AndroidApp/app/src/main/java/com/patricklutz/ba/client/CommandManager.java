@@ -28,13 +28,13 @@ public class CommandManager {
     private long lastShot;
 
     private Command command;
-    private Channel channel;
+    private Websocket channel;
     private Context mainContext;
 
 
     public CommandManager(Context context) {
         mainContext = context;
-        channel = Channel.getInstance();
+        channel = Websocket.getInstance();
 
         command = new Command(0,0,false);
         lastShot = 0;
@@ -89,7 +89,7 @@ public class CommandManager {
             if (command.isShot())
                 lastShot = System.currentTimeMillis();
 
-            channel.send(command.getCommandData());
+            channel.send(command.getCommandJSON());
         }
     }
 

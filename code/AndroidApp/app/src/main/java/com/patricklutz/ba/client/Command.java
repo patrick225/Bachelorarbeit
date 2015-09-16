@@ -1,6 +1,9 @@
 package com.patricklutz.ba.client;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Modelclass for one single Command to the Server
  *
@@ -59,5 +62,20 @@ public class Command {
             data[2] = 0x00;
 
         return data;
+    }
+
+    public String getCommandJSON() {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("motorLeft", veloLeft);
+            jsonObject.put("motorRight", veloRight);
+            jsonObject.put("shot", shot);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String result = jsonObject.toString();
+
+        return result;
     }
 }
