@@ -1,6 +1,10 @@
 package com.patricklutz.ba.client;
 
+import android.util.Log;
+
 import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.drafts.Draft_17;
+import org.java_websocket.exceptions.WebsocketNotConnectedException;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
@@ -25,7 +29,7 @@ public class Websocket extends WebSocketClient {
     ConnectionListener connectionListener;
 
     private Websocket(ConnectionListener connectionListener) {
-        super(serverURI);
+        super(serverURI, new Draft_17());
         this.connectionListener = connectionListener;
 
     }
@@ -38,14 +42,20 @@ public class Websocket extends WebSocketClient {
 
         return instance;
     }
+
+
     public static Websocket getInstance(ConnectionListener connectionListener) {
 
-        if (instance == null) instance = new Websocket(connectionListener);
+        if (instance == null)
+            instance = new Websocket(connectionListener);
+        else
+            setConnectionListener(connectionListener);
+
         return instance;
     }
 
-    public void setConnectionListener(ConnectionListener connectionListener) {
-        this.connectionListener = connectionListener;
+    public static void setConnectionListener(ConnectionListener connectionListener) {
+        instance.connectionListener = connectionListener;
     }
 
 
@@ -61,11 +71,24 @@ public class Websocket extends WebSocketClient {
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-
+        connectionListener.onClose();
+        instance = new Websocket(connectionListener);
     }
 
     @Override
     public void onError(Exception ex) {
+        connectionListener.onClose();
+        instance = new Websocket(connectionListener);
+    }
 
+    @Override
+    public void send(String text) {
+
+        try {
+            super.send(text);
+        } catch (WebsocketNotConnectedException e) {
+            close();
+            onError(e);
+        }
     }
 }

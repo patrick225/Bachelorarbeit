@@ -2,6 +2,10 @@ package com.patricklutz.ba.client;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -9,6 +13,8 @@ import android.widget.Toast;
  * Created by privat-patrick on 16.09.2015.
  */
 public abstract class ControlActivity extends Activity {
+
+    private final int UI_CONN_CLOSED = 1;
 
     protected CommandManager cmdManager;
 
@@ -52,9 +58,22 @@ public abstract class ControlActivity extends Activity {
         @Override
         public void onClose() {
 
+            cmdManager.stop();
             String message = "Connection refused!";
-            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+            Message uiMessage = uiHandler.obtainMessage(UI_CONN_CLOSED, message);
+            uiMessage.sendToTarget();
             finish();
+        }
+    };
+
+    Handler uiHandler = new Handler(Looper.getMainLooper()) {
+
+        @Override
+        public void handleMessage(Message message) {
+
+            if (message.what == UI_CONN_CLOSED) {
+                Toast.makeText(getApplicationContext(), message.obj.toString(), Toast.LENGTH_LONG).show();
+            }
         }
     };
 }

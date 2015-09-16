@@ -59,42 +59,42 @@ public class MainActivity_Wheel extends Activity {
 
     }
 
-
-    /**
-     * Returns a working Channel for the given Connectiontype
-     *
-     * @param connection type of connection
-     * @return working channel
-     */
-    private Channel getChannel(int connection) {
-        Channel channel = null;
-        switch (connection) {
-            case Channel.TYPE_WLAN:
-                channel = new TCPClient(new Handler() {
-                    public void handleMessage(Message msg) {
-
-                        String message;
-                        switch (msg.arg1) {
-                            case Channel.STATE_CONNECTED:
-                                message = "Connected to Server!";
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                break;
-                            case Channel.STATE_DISCONNECTED:
-                                message = "Connection refused!";
-                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-                                finish();
-                                break;
-                        }
-                    }
-                });
-                break;
-            case Channel.TYPE_BLUETOOTH:
-                //@TODO bluetooth channel zurueckgeben
-                break;
-
-        }
-        return channel;
-    }
+//
+//    /**
+//     * Returns a working Channel for the given Connectiontype
+//     *
+//     * @param connection type of connection
+//     * @return working channel
+//     */
+//    private Channel getChannel(int connection) {
+//        Channel channel = null;
+//        switch (connection) {
+//            case Channel.TYPE_WLAN:
+//                channel = new TCPClient(new Handler() {
+//                    public void handleMessage(Message msg) {
+//
+//                        String message;
+//                        switch (msg.arg1) {
+//                            case Channel.STATE_CONNECTED:
+//                                message = "Connected to Server!";
+//                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+//                                break;
+//                            case Channel.STATE_DISCONNECTED:
+//                                message = "Connection refused!";
+//                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+//                                finish();
+//                                break;
+//                        }
+//                    }
+//                });
+//                break;
+//            case Channel.TYPE_BLUETOOTH:
+//                //@TODO bluetooth channel zurueckgeben
+//                break;
+//
+//        }
+//        return channel;
+//    }
 
 
     @Override
