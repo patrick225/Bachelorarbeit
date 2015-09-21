@@ -42,11 +42,12 @@ public class ConnectionManager {
 		mapping = HashBiMap.create();
 	
 		// server for controllers
-		new Thread(new WebsocketServer()).start();		
+		new Thread(new Webserver()).start();		
 		
 		// server for robots
 		new Thread(new UDPSocketProvider()).start();
 		
+		// webserver for webcontroller
 	}
 	
 	public static synchronized ConnectionManager getInstance() {
