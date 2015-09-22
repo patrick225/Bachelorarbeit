@@ -1,8 +1,11 @@
 package message;
 
+import logic.JSONUtil;
+
 import org.json.simple.JSONObject;
 
 import com.google.common.primitives.Longs;
+
 
 public class ControllerCommand {
 
@@ -14,21 +17,14 @@ public class ControllerCommand {
 	
 	public ControllerCommand(JSONObject json) {
 		
+		command[0] = JSONUtil.jsonObjToByte(json.get("motorLeft"));
+		command[1] = JSONUtil.jsonObjToByte(json.get("motorRight"));
+		command[2] = JSONUtil.jsonObjToByte(json.get("shot"));
 		
-		command[0] = jsonObjToByte(json.get("motorLeft"));
-		command[1] = jsonObjToByte(json.get("motorRight"));
-		command[2] = jsonObjToByte(json.get("shot"));
 	}
 	
 	public byte[] getBytes() {
 		return command;
-	}
-	
-	
-	private byte jsonObjToByte(Object obj) {
-		
-		byte[] bytes = Longs.toByteArray((long) obj);
-		return bytes[(Long.SIZE / 8) - 1];
 	}
 	
 	@Override

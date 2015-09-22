@@ -1,3 +1,4 @@
+package logic;
 import connection.ConnectionManager;
 import connection.OnPlayerReady;
 

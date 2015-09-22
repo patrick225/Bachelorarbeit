@@ -1,3 +1,4 @@
+package logic;
 import message.ControllerCommand;
 import message.RobotCommand;
 import connection.OnControllerMessageReceived;
@@ -17,8 +18,8 @@ public class Player {
 	
 	private CommandTask commandTask;
 	
+	
 	public Player() {
-
 	}
 	
 	
