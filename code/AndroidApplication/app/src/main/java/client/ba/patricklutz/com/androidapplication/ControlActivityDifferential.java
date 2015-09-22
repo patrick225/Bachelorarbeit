@@ -1,19 +1,8 @@
 package client.ba.patricklutz.com.androidapplication;
 
-import android.app.Activity;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.io.File;
-import java.util.ResourceBundle;
 
 /**
  * This is the first Controlltype via Seekbars for left and right motor
@@ -32,7 +21,7 @@ public class ControlActivityDifferential extends ControlActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_control_activity_differential);
 
 
         powerBar = (ProgressBar) findViewById(R.id.progressBarBattery);
