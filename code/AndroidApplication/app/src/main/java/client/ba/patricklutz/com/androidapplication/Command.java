@@ -12,6 +12,7 @@ import org.json.JSONObject;
  */
 public class Command {
 
+    private static final int CONTROLLERTYPE = 2;
     private static final int packagesize = 3;
     private int veloLeft;
     private int veloRight;
@@ -68,6 +69,8 @@ public class Command {
 
         JSONObject jsonObject = new JSONObject();
         try {
+            jsonObject.put("controllerType", CONTROLLERTYPE);
+
             jsonObject.put("motorLeft", veloLeft);
             jsonObject.put("motorRight", veloRight);
             jsonObject.put("shot", shot);
