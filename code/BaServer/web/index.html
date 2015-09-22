@@ -9,11 +9,11 @@
             var lastKeyDown;
             var command = {};
             var heldKeys = [];
-            heldKeys[37] = 0;
-            heldKeys[38] = 0;
-            heldKeys[39] = 0;
-            heldKeys[40] = 0;
-            shot = 0;
+            heldKeys[37] = "false";
+            heldKeys[38] = "false";
+            heldKeys[39] = "false";
+            heldKeys[40] = "false";
+            shot = "false";
             shotBreak = 0;
             
             
@@ -22,10 +22,10 @@
             document.onkeyup = function(event) {
                 
                 if (event.keyCode < 41 && event.keyCode > 36) {                   
-                    heldKeys[event.keyCode] = 0;
+                    heldKeys[event.keyCode] = "false";
                 }
                 if (event.keyCode == 32) {
-                    shot = 0;
+                    shot = "false";
                 }
                 
             }
@@ -35,11 +35,11 @@
                 if (heldKeys[event.keyCode]) return;
                 
                 if (event.keyCode < 41 && event.keyCode > 36) {
-                    heldKeys[event.keyCode] = 1;
+                    heldKeys[event.keyCode] = "true";
                     lastKeyDown = event;
                 }      
                 if (event.keyCode == 32) {
-                    shot = 1;
+                    shot = "true";
                 }
                 
             }

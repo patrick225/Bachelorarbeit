@@ -1,6 +1,6 @@
 package logic;
-import message.ControllerCommand;
-import message.RobotCommand;
+import org.json.simple.JSONObject;
+
 import connection.OnControllerMessageReceived;
 import connection.OnRobotMessageReceived;
 import connection.UDPConnectionHandler;
@@ -62,9 +62,9 @@ public class Player {
 	OnControllerMessageReceived messageListenerController = new OnControllerMessageReceived() {
 		
 		@Override
-		public void messageReceived(WebsocketSocket controller, ControllerCommand command) {
+		public void messageReceived(WebsocketSocket controller, JSONObject command) {
 
-			commandTask.setCommand(new RobotCommand(command));
+			commandTask.setCommand(CommandTranslater.translateCommand(command));
 		}
 	};
 	

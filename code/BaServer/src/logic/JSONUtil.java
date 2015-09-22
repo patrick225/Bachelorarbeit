@@ -14,4 +14,12 @@ public class JSONUtil {
 		int result = (int) ((long) obj);
 		return result;
 	}
+	
+	public static boolean jsonObjToBoolean(Object obj) {
+		boolean result = Boolean.valueOf(String.valueOf((long) obj));
+		
+//		System.out.println(String.valueOf((long) obj));
+		
+		return result;
+	}
 }

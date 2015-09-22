@@ -87,4 +87,13 @@ public class RobotCommand {
 				(command[1] + command[2] + command[3] + command[4]) % (byte) 0xFF);
 	}
 
+	@Override
+	public String toString() {
+		String result = "camera: " + command[1] + "\n";
+		result += "kick: " + command[2] + "\n";
+		result += "motorLeft: " + command[3] + "\n";
+		result += "motorRight: " + command[4] + "\n";
+		
+		return result;
+	}
 }

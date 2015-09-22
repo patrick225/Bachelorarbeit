@@ -10,14 +10,6 @@ public class ConnectionManager {
 	
 	private static volatile ConnectionManager instance = null;
 
-	public static final int STATE_CONNECTED = 100;
-	public static final int STATE_DISCONNECTED = 200;
-	
-	private static final int PROT_UDP = 11;
-	
-	
-	private UDPSocketProvider udpConnector;
-	
 	private OnPlayerReady playerReadyListener;
 	private boolean player1Ready = false;
 	private boolean player2Ready = false;
