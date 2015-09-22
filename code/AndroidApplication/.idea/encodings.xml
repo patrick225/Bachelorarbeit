@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/Command.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/CommandManager.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/ConnectionListener.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/ControlActivity.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/ControlActivityDifferential.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/GameState.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/MainActivity_Wheel.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/MenuActivity.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/SeekbarVertical.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/ShotDetector.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/client/ba/patricklutz/com/androidapplication/Websocket.java" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/buttonshape.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/progress_bar.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_control_activity_differential.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main_activity__wheel.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_menu.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values/dimens.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/values/styles.xml" charset="windows-1252" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
