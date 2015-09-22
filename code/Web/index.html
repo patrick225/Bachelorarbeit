@@ -50,7 +50,6 @@
             
             function createSocket() {
                 websocket = new WebSocket("ws://localhost:8080/control/");
-//                websocket = new WebSocket("ws://echo.websocket.org/");
                 websocket.onopen = function(evt) { onOpen(evt) };
                 websocket.onclose = function(evt) { onClose(evt) };
                 websocket.onmessage = function(evt) { onMessage(evt) };
