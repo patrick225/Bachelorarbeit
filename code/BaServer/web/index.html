@@ -32,7 +32,7 @@
             
             document.onkeydown = function(event) {
                 
-                if (heldKeys[event.keyCode]) return;
+                if (heldKeys[event.keyCode] == "true") return;
                 
                 if (event.keyCode < 41 && event.keyCode > 36) {
                     heldKeys[event.keyCode] = "true";

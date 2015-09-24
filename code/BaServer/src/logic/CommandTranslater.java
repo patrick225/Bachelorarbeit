@@ -9,10 +9,6 @@ public class CommandTranslater {
 	private static final int CONTROLLER_WEBAPP = 1;
 	private static final int CONTROLLER_ANDROIDAPP = 2;
 	
-	public CommandTranslater() {
-		
-	}
-	
 	
 	public static RobotCommand translateCommand(JSONObject command) {
 		
@@ -50,7 +46,7 @@ public class CommandTranslater {
 		if (JSONUtil.jsonObjToBoolean(command.get("right"))) {
 			motorRight *= 0.75;
 		}
-		if (JSONUtil.jsonObjToBoolean(command.get("up"))) {
+		if (JSONUtil.jsonObjToBoolean(command.get("left"))) {
 			motorLeft *= 0.75;
 		}
 		

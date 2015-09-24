@@ -16,10 +16,7 @@ public class JSONUtil {
 	}
 	
 	public static boolean jsonObjToBoolean(Object obj) {
-		boolean result = Boolean.valueOf(String.valueOf((long) obj));
-		
-//		System.out.println(String.valueOf((long) obj));
-		
+		boolean result = Boolean.valueOf(String.valueOf(obj));
 		return result;
 	}
 }
