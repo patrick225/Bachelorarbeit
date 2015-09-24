@@ -1,6 +1,6 @@
 package connection;
 
-import logic.CommandTranslater;
+import java.io.IOException;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -87,4 +87,15 @@ public class WebsocketSocket extends WebSocketAdapter {
 			e.printStackTrace();
 		}
     }
+
+	public void send(String message) {
+
+		try {
+			getRemote().sendString(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+
 }

@@ -1,5 +1,7 @@
 package message;
 
+import org.json.simple.JSONObject;
+
 public class ControllerStatus {
 
 	private final int size = 3;
@@ -33,6 +35,17 @@ public class ControllerStatus {
 	
 	public byte[] getBytes() {
 		return status;
+	}
+
+	@SuppressWarnings("unchecked")
+	public String getJSON() {
+
+		JSONObject json = new JSONObject();
+		json.put("akku", status[0]);
+		json.put("countP1", status[1]);
+		json.put("countP2", status[2]);
+		
+		return json.toString();
 	}
 
 }

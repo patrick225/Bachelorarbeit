@@ -9,11 +9,10 @@ public class Game {
 	GoalDetector gd;
 	
 	
-	
 	private Player player1;
 	private Player player2;
 	
-	
+	private static String score;
 	
 	public Game() {
 		
@@ -30,16 +29,11 @@ public class Game {
 	public void resetScore() {
 		player1.setScore(0);
 		player2.setScore(0);
+		
+		
 	}
 	
 	
-//	private void statusPlayer1(RobotStatus status) {
-//		ControllerStatus cstat = new ControllerStatus();
-//		cstat.setAkku(status.getAkku());
-//		cstat.setCountP1(scorePlayer1);
-//		cstat.setCountP2(scorePlayer2);
-//		controller1.sendMessage(cstat.getBytes());
-//	}
 	
 	
 //	private void statusPlayer2(RobotStatus status) {
@@ -77,6 +71,12 @@ public class Game {
 		}
 	};
 	
+	
+	public static String getScore() {
+		return score;
+	}
+	
+	
 	OnGoalDetected goalListener = new OnGoalDetected() {
 		
 		@Override
@@ -85,7 +85,11 @@ public class Game {
 			if (player == 1) player1.goalDetected();
 			if (player == 2) player2.goalDetected();
 			
-			System.out.println(player1.getScore() + " : " + player2.getScore());			
+			score = player1.getScore() + " : " + player2.getScore();
+			
+			System.out.println(score);			
 		}
 	};
+	
+	
 }

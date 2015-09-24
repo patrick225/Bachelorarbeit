@@ -2,8 +2,10 @@ package logic;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import message.ControllerStatus;
 import message.RobotCommand;
 import connection.UDPConnectionHandler;
+import connection.WebsocketSocket;
 
 
 public class CommandTask extends TimerTask {
@@ -12,22 +14,34 @@ public class CommandTask extends TimerTask {
 	
 	private int sendRate = 100;
 	
-	private volatile RobotCommand bufferedCommand;
+	private volatile RobotCommand bufferedCommandRobot;
+	private volatile ControllerStatus bufferedStatusController;
 	
 	private Timer timer = new Timer(true);
 	
 	private int stopCount = 0;
 	
 	private UDPConnectionHandler robot;
+	private WebsocketSocket controller;
 	
 	public CommandTask(UDPConnectionHandler robot) {
-		bufferedCommand = new RobotCommand();
+		bufferedCommandRobot = new RobotCommand();
 		this.robot = robot;
+	}
+	
+	public CommandTask(WebsocketSocket controller) {
+		bufferedStatusController = new ControllerStatus();
+		this.controller = controller;
 	}
 	
 	
 	public void setCommand(RobotCommand command) {
-		bufferedCommand = command;
+		bufferedCommandRobot = command;
+		stopCount = 0;
+	}
+	
+	public void setCommand(ControllerStatus command) {
+		bufferedStatusController = command;
 		stopCount = 0;
 	}
 
@@ -35,12 +49,24 @@ public class CommandTask extends TimerTask {
 	@Override
 	public void run() {
 		
-		robot.send(bufferedCommand.getBytes());
+		if (robot != null) {
+			robot.send(bufferedCommandRobot.getBytes());
+			
+			if (stopCount > (VALIDITY / sendRate)) {
+				bufferedCommandRobot = new RobotCommand();
+			}
+		}
+		
+		if (controller != null) {
+			controller.send(bufferedStatusController.getJSON());
+			
+			if (stopCount > (VALIDITY / sendRate)) {
+				bufferedStatusController = new ControllerStatus();
+			}
+		}
 		
 		stopCount++;
-		if (stopCount > (VALIDITY / sendRate)) {
-			bufferedCommand = new RobotCommand();
-		}
+		
 	}
 	
 	public void start() {

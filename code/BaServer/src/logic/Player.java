@@ -1,4 +1,7 @@
 package logic;
+import message.ControllerStatus;
+import message.RobotStatus;
+
 import org.json.simple.JSONObject;
 
 import connection.OnControllerMessageReceived;
@@ -16,11 +19,9 @@ public class Player {
 	
 	private int score = 0;
 	
-	private CommandTask commandTask;
+	private CommandTask commandTaskToRobot;
+	private CommandTask commandTaskToController;
 	
-	
-	public Player() {
-	}
 	
 	
 	public void setDevices(UDPConnectionHandler robot, WebsocketSocket controller) {
@@ -30,7 +31,11 @@ public class Player {
 		controller.registerMessageListener(messageListenerController);						
 		robot.registerMessageListener(messageListenerRobot);
 		
-		commandTask = new CommandTask(robot);
+		commandTaskToRobot = new CommandTask(robot);
+		commandTaskToController = new CommandTask(controller);
+		
+		commandTaskToRobot.start();
+		commandTaskToController.start();
 	}
 	
 	
@@ -42,7 +47,8 @@ public class Player {
 		controller = null;
 		robot = null;
 		
-		commandTask.cancel();
+		commandTaskToRobot.cancel();
+		commandTaskToController.cancel();
 	}
 
 	
@@ -55,24 +61,36 @@ public class Player {
 		this.score = score;
 	}
 	
+	
 	public int getScore() {
 		return score;
 	}
+	
 	
 	OnControllerMessageReceived messageListenerController = new OnControllerMessageReceived() {
 		
 		@Override
 		public void messageReceived(WebsocketSocket controller, JSONObject command) {
 
-			commandTask.setCommand(CommandTranslater.translateCommand(command));
+			commandTaskToRobot.setCommand(CommandTranslater.translateCommand(command));
 		}
 	};
+	
 	
 	OnRobotMessageReceived messageListenerRobot = new OnRobotMessageReceived() {
 		
 		@Override
 		public void messageReceived(UDPConnectionHandler robot, byte[] data) {
-
+			
+			String score = Game.getScore();
+			String[] scores = score.split(":");
+			
+			RobotStatus rs = new RobotStatus(data);
+			ControllerStatus cs = new ControllerStatus();
+			cs.setAkku(rs.getAkku());
+			cs.setCountP1(Integer.valueOf(scores[0]));
+			cs.setCountP2(Integer.valueOf(scores[1]));
+			commandTaskToController.setCommand(cs);
 		
 		}
 	};
