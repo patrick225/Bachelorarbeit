@@ -49,7 +49,7 @@
             
             
             function createSocket() {
-                websocket = new WebSocket("ws://localhost:8080/control/");
+                websocket = new WebSocket("ws://134.60.145.193:8080/control/");
                 websocket.onopen = function(evt) { onOpen(evt) };
                 websocket.onclose = function(evt) { onClose(evt) };
                 websocket.onmessage = function(evt) { onMessage(evt) };
