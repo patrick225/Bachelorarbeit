@@ -12,6 +12,9 @@ public class UDPConnectionHandler {
 	private ConnectionControl cc;
 	
 	OnRobotMessageReceived messageListener;
+	OnRobotMessageReceived energyListener;
+	
+	private boolean blockControllerCommands = false;
 
 	public UDPConnectionHandler(UDPSocketProvider socketProv) {
 
@@ -30,7 +33,8 @@ public class UDPConnectionHandler {
 	public void incomingMessage(DatagramPacket packet) {
 
 		cc.update();
-		if (messageListener != null) {
+		energyListener.messageReceived(this, packet.getData());
+		if (messageListener != null && !blockControllerCommands) {
 			messageListener.messageReceived(this, packet.getData());
 		}
 	}
@@ -50,6 +54,14 @@ public class UDPConnectionHandler {
     	this.messageListener = null;
     }
     
+    
+    public void registerEnergyListener (OnRobotMessageReceived energyListener) {
+    	this.energyListener = energyListener;
+    }
+    
+    public void blockControllerCommands (boolean block) {
+    	blockControllerCommands = block;
+    }
     
     public void onTimeout() {
     	cm.unregisterRobot(this);

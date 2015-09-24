@@ -19,5 +19,8 @@ public class RobotStatus {
 		return status[1];
 	}
 	
+	public byte getPulseLength() {
+		return status[2];
+	}
 
 }
