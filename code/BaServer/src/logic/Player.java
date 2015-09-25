@@ -29,7 +29,7 @@ public class Player {
 		this.robot = robot;
 		
 		commandTaskToRobot = new CommandTask(robot);
-		commandTaskToController = new CommandTask(controller, 10000);
+		commandTaskToController = new CommandTask(controller, 500);
 		
 		commandTaskToRobot.start();
 		commandTaskToController.start();
