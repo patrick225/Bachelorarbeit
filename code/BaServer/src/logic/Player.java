@@ -28,14 +28,14 @@ public class Player {
 		this.controller = controller;
 		this.robot = robot;
 		
-		controller.registerMessageListener(messageListenerController);						
-		robot.registerMessageListener(messageListenerRobot);
-		
 		commandTaskToRobot = new CommandTask(robot);
-		commandTaskToController = new CommandTask(controller, 500);
+		commandTaskToController = new CommandTask(controller, 10000);
 		
 		commandTaskToRobot.start();
 		commandTaskToController.start();
+		
+		controller.registerMessageListener(messageListenerController);						
+		robot.registerMessageListener(messageListenerRobot);
 	}
 	
 	
