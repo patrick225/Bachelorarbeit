@@ -45,9 +45,6 @@
             }
             createSocket();
             
-            
-            
-            
             function createSocket() {
                 websocket = new WebSocket("ws://localhost:8080/control/");
                 websocket.onopen = function(evt) { onOpen(evt) };
@@ -72,7 +69,6 @@
             {
                 console.log('<span style="color: blue;">RESPONSE: ' + evt.data+'</span>');
 
-              websocket.close();
             }
 
             function onError(evt)
@@ -81,8 +77,6 @@
 
             }
 
-
-            
 
             function send() {
                 

@@ -32,7 +32,7 @@ public class Player {
 		robot.registerMessageListener(messageListenerRobot);
 		
 		commandTaskToRobot = new CommandTask(robot);
-		commandTaskToController = new CommandTask(controller);
+		commandTaskToController = new CommandTask(controller, 500);
 		
 		commandTaskToRobot.start();
 		commandTaskToController.start();

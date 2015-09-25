@@ -29,9 +29,10 @@ public class CommandTask extends TimerTask {
 		this.robot = robot;
 	}
 	
-	public CommandTask(WebsocketSocket controller) {
+	public CommandTask(WebsocketSocket controller, int sendRate) {
 		bufferedStatusController = new ControllerStatus();
 		this.controller = controller;
+		this.sendRate = sendRate;
 	}
 	
 	

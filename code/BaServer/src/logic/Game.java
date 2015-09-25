@@ -12,7 +12,7 @@ public class Game {
 	private Player player1;
 	private Player player2;
 	
-	private static String score;
+	private static String score = "0:0";
 	
 	public Game() {
 		
@@ -22,7 +22,7 @@ public class Game {
 		cm = ConnectionManager.getInstance();
 		cm.registerPlayerReadyListener(playerReadyListener);
 		
-//		gd = new GoalDetector(goalListener);
+		gd = new GoalDetector(goalListener);
 
 	}
 	
@@ -32,17 +32,6 @@ public class Game {
 		
 		
 	}
-	
-	
-	
-	
-//	private void statusPlayer2(RobotStatus status) {
-//		ControllerStatus cstat = new ControllerStatus();
-//		cstat.setAkku(status.getAkku());
-//		cstat.setCountP1(scorePlayer1);
-//		cstat.setCountP2(scorePlayer2);
-//		controller2.sendMessage(cstat.getBytes());
-//	}
 	
 	
 	OnPlayerReady playerReadyListener = new OnPlayerReady() {
