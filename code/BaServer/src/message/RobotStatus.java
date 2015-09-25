@@ -23,4 +23,11 @@ public class RobotStatus {
 		return status[2];
 	}
 
+	
+	@Override
+	public String toString() {
+		
+		return "Akku: " + status[1] + "\n"
+				+ "PulsLänge: " + status[2];
+	}
 }

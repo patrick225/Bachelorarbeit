@@ -3,6 +3,8 @@ package connection;
 import java.net.DatagramPacket;
 import java.net.SocketAddress;
 
+import message.RobotStatus;
+
 public class UDPConnectionHandler {
 
 	private UDPSocketProvider socketProv;
@@ -33,7 +35,8 @@ public class UDPConnectionHandler {
 	public void incomingMessage(DatagramPacket packet) {
 
 		cc.update();
-		energyListener.messageReceived(this, packet.getData());
+		System.out.println(new RobotStatus(packet.getData()));
+//		energyListener.messageReceived(this, packet.getData());
 		if (messageListener != null && !blockControllerCommands) {
 			messageListener.messageReceived(this, packet.getData());
 		}

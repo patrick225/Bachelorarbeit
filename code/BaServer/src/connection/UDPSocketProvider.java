@@ -46,7 +46,6 @@ public class UDPSocketProvider implements Runnable {
 			try {
 				socket.receive(packet);
 				
-				System.out.println(packet.getAddress());
 				// discard if ip no robot
 				if (!isRobot(packet)) continue;
 				

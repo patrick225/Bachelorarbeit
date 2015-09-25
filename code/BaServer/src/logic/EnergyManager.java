@@ -121,20 +121,8 @@ public class EnergyManager {
 		@Override
 		public void run() {
 
-			
 			try {
-			    process = new ProcessBuilder("./execTest").start();
-				
-				InputStream is = process.getInputStream();
-				InputStreamReader isr = new InputStreamReader(is);
-				
-				BufferedReader br = new BufferedReader(isr);
-				
-				System.out.println("output of execTest is: " );
-				String line;
-				while ((line = br.readLine()) != null) {
-					System.out.println(line);
-				}
+			    process = new ProcessBuilder("./test").start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

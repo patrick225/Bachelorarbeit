@@ -1,7 +1,5 @@
 package connection;
 
-import logic.EnergyManager;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -82,20 +80,20 @@ public class ConnectionManager {
 		
 		if (robot.equals(robot1Static)) {
 			robot1 = robot;
-			new EnergyManager(robot, 1);
+//			new EnergyManager(robot, 1);
 		}
 		if (robot.equals(robot2Static)) {
 			robot2 = robot;
-			new EnergyManager(robot, 2);
+//			new EnergyManager(robot, 2);
 		}
 		
 		if (robot1 == null) { 
 			robot1 = robot;
-			new EnergyManager(robot, 1);
+//			new EnergyManager(robot, 1);
 		}
 		else if (robot2 == null) {
 			robot2 = robot;
-			new EnergyManager(robot, 2);
+//			new EnergyManager(robot, 2);
 		}
 		
 		printStatus();
