@@ -1,0 +1,77 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="20dip"
+        android:id="@+id/progressBarBattery"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:max="100"
+        android:progress="100" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+
+        <ImageView
+            android:id="@+id/imageview"
+            android:layout_width="400dp"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="false"
+            android:layout_centerHorizontal="true" />
+
+        <client.ba.patricklutz.com.androidapplication.SeekbarVertical
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:id="@+id/seekBarLeft"
+            android:max="100"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:progress="50"
+            android:progressDrawable="@android:color/transparent"/>
+
+        <client.ba.patricklutz.com.androidapplication.SeekbarVertical
+            android:layout_width="30dp"
+            android:layout_height="300dp"
+            android:id="@+id/seekBarRight"
+            android:max="100"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:progress="50"
+            android:progressDrawable="@android:color/transparent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/countP1Text"
+            android:layout_alignTop="@+id/seekBarLeft"
+            android:layout_toEndOf="@+id/seekBarLeft"
+            android:layout_toRightOf="@+id/seekBarLeft"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/countP2Text"
+            android:layout_alignTop="@+id/seekBarRight"
+            android:layout_toStartOf="@+id/seekBarRight"
+            android:layout_toLeftOf="@+id/seekBarRight"/>
+
+    </RelativeLayout>
+
+
+
+
+
+
+</RelativeLayout>
