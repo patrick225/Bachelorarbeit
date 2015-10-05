@@ -118,11 +118,11 @@ public class CommandTranslater {
 		}
 		
 		double ratioBigSmall = 1.0;
-		if (motorLeftNew > motorRightNew && motorRightNew != 0) {
+		if (Math.abs(motorLeftNew) > Math.abs(motorRightNew) && motorRightNew != 0) {
 			ratioBigSmall = (double) motorLeftNew / (double) motorRightNew;
 			valid.setMotorRight((int) ((double) valid.getMotorLeft() / ratioBigSmall));
 		}
-		else if (motorLeftNew < motorRightNew && motorLeftNew != 0){
+		else if (Math.abs(motorLeftNew) < Math.abs(motorRightNew) && motorLeftNew != 0){
 			ratioBigSmall = (double) motorRightNew / (double) motorLeftNew;
 			valid.setMotorLeft((int) ((double) valid.getMotorRight() / ratioBigSmall));
 		}
