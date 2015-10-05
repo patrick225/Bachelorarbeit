@@ -86,6 +86,14 @@ public class RobotCommand {
 		command[5] = (byte) ((byte) 0xFF - 
 				(command[1] + command[2] + command[3] + command[4]) % (byte) 0xFF);
 	}
+	
+	public int getMotorLeft() {
+		return (int) command[3];
+	}
+	
+	public int getMotorRight() {
+		return (int) command[4];
+	}
 
 	@Override
 	public String toString() {

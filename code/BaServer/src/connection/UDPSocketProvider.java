@@ -17,6 +17,7 @@ public class UDPSocketProvider implements Runnable {
 	private final static int ROBOT_PORT = 44044;
 	private final static String IP_ROBOT1 = "134.60.130.47";
 	private final static String IP_ROBOT2 = "134.60.145.165";
+	private final static String IP_DEBUG = "134.60.156.40";
 	
 	private final static int PACKETSIZE_INCOMING = 12;
 	
@@ -46,7 +47,6 @@ public class UDPSocketProvider implements Runnable {
 			try {
 				socket.receive(packet);
 				
-				System.out.println(packet.getAddress());
 				// discard if ip no robot
 				if (!isRobot(packet)) continue;
 				
@@ -111,7 +111,8 @@ public class UDPSocketProvider implements Runnable {
 				return 1;
 			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
 				return 2;
-			
+			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
+				return 1;
 			//debug
 			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
 				return 1;
