@@ -17,10 +17,10 @@ public class CommandTranslater {
 		switch (JSONUtil.jsonObjToInt(command.get("controllerType"))) {
 		
 		case CONTROLLER_WEBAPP:
-			result = translateWebapplication(command);
+			result = translateWASD(command);
 			break;
 		case CONTROLLER_ANDROIDAPP:
-			result = translateAndroidapplication(command);
+			result = translateDifferential(command);
 			break;
 			
 		}
@@ -29,7 +29,7 @@ public class CommandTranslater {
 	}
 	
 	
-	private static RobotCommand translateWebapplication(JSONObject command) {
+	private static RobotCommand translateWASD(JSONObject command) {
 		
 		int motorLeft = 0, motorRight = 0;
 		
@@ -74,7 +74,7 @@ public class CommandTranslater {
 	}
 	
 	
-	private static RobotCommand translateAndroidapplication(JSONObject command) {
+	private static RobotCommand translateDifferential(JSONObject command) {
 		
 		RobotCommand robot = new RobotCommand(
 				false, 
