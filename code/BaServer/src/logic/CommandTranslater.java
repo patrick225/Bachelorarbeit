@@ -50,6 +50,20 @@ public class CommandTranslater {
 			motorLeft *= 0.75;
 		}
 		
+		if (motorRight == 0 && motorLeft == 0 &&
+				JSONUtil.jsonObjToBoolean(command.get("right"))) {
+			
+			motorLeft = 20;
+			motorRight = -20;
+		}
+		
+		if (motorRight == 0 && motorLeft == 0 &&
+				JSONUtil.jsonObjToBoolean(command.get("left"))) {
+			
+			motorLeft = -20;
+			motorRight = 20;
+		}
+		
 		RobotCommand robot = new RobotCommand(
 				false, 
 				shot,
@@ -96,7 +110,7 @@ public class CommandTranslater {
 		
 		// if passing 0, break to 0
 		if (motorRightNew > 0 && motorRightOld < 0 ||
-				motorRightNew < 0 && motorRightOld > 0) {
+			motorRightNew < 0 && motorRightOld > 0) {
 			
 			valid.setMotorRight(0);
 		} else if (Math.abs(motorRightNew)  > Math.abs(motorRightOld)){
@@ -105,26 +119,21 @@ public class CommandTranslater {
 		
 		double ratioBigSmall = 1.0;
 		if (motorLeftNew > motorRightNew && motorRightNew != 0) {
-			ratioBigSmall = motorLeftNew / motorRightNew;
-			valid.setMotorRight((int) (valid.getMotorLeft() / ratioBigSmall));
+			ratioBigSmall = (double) motorLeftNew / (double) motorRightNew;
+			valid.setMotorRight((int) ((double) valid.getMotorLeft() / ratioBigSmall));
 		}
 		else if (motorLeftNew < motorRightNew && motorLeftNew != 0){
-			ratioBigSmall = motorRightNew / motorLeftNew;
-			valid.setMotorLeft((int) (valid.getMotorRight() / ratioBigSmall));
+			ratioBigSmall = (double) motorRightNew / (double) motorLeftNew;
+			valid.setMotorLeft((int) ((double) valid.getMotorRight() / ratioBigSmall));
 		}
 		
-		
-		
-		
-
-		System.out.println(valid);
 		return valid;
 	}
 	
 	private static int getMaxValue(int old) {
 		
 		old = Math.abs(old);
-		double newVal =  1.2 * old + 10.0;
+		double newVal =  1.225 * old + 10.0;
 		
 		return (int) newVal;
 	}
