@@ -39,6 +39,8 @@ public class CommandManager {
 
         new ShotDetector(context, this);
 
+        command = new JSONObject();
+
     }
 
 

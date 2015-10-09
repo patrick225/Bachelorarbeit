@@ -156,8 +156,6 @@ public class MainActivity_Wheel extends Activity {
         tmp1.setText("" + values[1]);
         tmp2.setText("" + values[2]);
 
-        cmdManager.setVeloLeft(getVeloLeft(values[1]));
-        cmdManager.setVeloRight(getVeloRight(values[1]));
     }
 
 
@@ -202,7 +200,6 @@ public class MainActivity_Wheel extends Activity {
      * @param view
      */
     public void setFire(View view) {
-        cmdManager.setShot(true);
     }
 
 }
