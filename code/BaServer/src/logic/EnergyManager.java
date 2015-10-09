@@ -20,7 +20,7 @@ public class EnergyManager {
 	private byte myPulslength;
 	
 	private UDPConnectionHandler robot;
-	private volatile BlinkTask blink;
+	private BlinkTask blink;
 	
 	public EnergyManager (UDPConnectionHandler robot, int chargeStation) {
 		
@@ -84,21 +84,18 @@ public class EnergyManager {
 	private void startBlink() {
 		
 		// No Blinktask existing, or one existing but not alive
-		if (blink == null ||
-			(blink != null && !blink.isAlive())) {
+		if (blink == null) {
 			
 			blink = new BlinkTask();
 			blink.start();
-			
-			System.out.println("neuer blinktask");
-			System.out.println(blink.isAlive());
 		}
 	}
 	
 	private void stopBlink() {
 
-		if (blink != null && blink.isAlive()) {
+		if (blink != null) {
 			blink.stopBlink();
+			blink = null;
 		}
 	}
 	
@@ -121,6 +118,7 @@ public class EnergyManager {
 		@Override
 		public void run() {
 
+			System.out.println("Start Blink:");
 			try {
 			    process = new ProcessBuilder("./test").start();
 			} catch (IOException e) {
@@ -131,6 +129,7 @@ public class EnergyManager {
 		
 		public void stopBlink() {
 			process.destroyForcibly();
+			System.out.println("Blink stopped.");
 		}
 	}
 }
