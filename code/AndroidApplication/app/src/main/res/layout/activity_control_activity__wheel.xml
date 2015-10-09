@@ -1,0 +1,78 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.patricklutz.ba.client.MainActivity_Wheel">
+
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="20dip"
+        android:id="@+id/progressBarBattery"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:max="100"
+        android:progress="100" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp">
+
+        <client.ba.patricklutz.com.androidapplication.SeekbarVertical
+            android:layout_width="50dp"
+            android:layout_height="300dp"
+            android:id="@+id/seekBarLeft"
+            android:max="100"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:progress="50"
+            android:progressDrawable="@android:color/transparent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/countP1Text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="0"
+            android:id="@+id/countP2Text" />
+
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_below="@+id/countP1Text"
+            android:layout_toRightOf="@+id/seekBarLeft"
+            android:layout_toEndOf="@+id/seekBarLeft"
+            android:layout_marginLeft="87dp"
+            android:layout_marginStart="87dp" />
+
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText2"
+            android:layout_below="@+id/editText"
+            android:layout_alignLeft="@+id/editText"
+            android:layout_alignStart="@+id/editText" />
+
+        <EditText
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText3"
+            android:layout_below="@+id/editText2"
+            android:layout_alignLeft="@+id/editText2"
+            android:layout_alignStart="@+id/editText2" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

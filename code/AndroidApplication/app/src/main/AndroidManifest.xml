@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity_Wheel"
+            android:name=".ControlActivityWheel"
             android:label="@string/title_activity_main_activity__wheel"
             android:screenOrientation="landscape" >
         </activity>
