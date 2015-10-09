@@ -1,9 +1,6 @@
 package logic;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import message.RobotCommand;
 import message.RobotStatus;
@@ -13,17 +10,17 @@ import connection.UDPConnectionHandler;
 public class EnergyManager {
 
 	// threshold on 15 %
-	private static final byte POWER_THRESHOLD = (byte) 0x0F;
+	private static final byte POWER_THRESHOLD = (byte) 0x64;
 	
-	private static final byte PULSELENGTH_GOAL1 = (byte) 0x00;
+	private static final byte PULSELENGTH_GOAL1 = (byte) 0x64;
 	private static final byte PULSELENGTH_GOAL2 = (byte) 0xFF;
 	
-	private static final byte TOLERANCE = (byte) 0x0A;
+	private static final byte TOLERANCE = (byte) 0x50;
 	
 	private byte myPulslength;
 	
 	private UDPConnectionHandler robot;
-	private BlinkTask blink;
+	private volatile BlinkTask blink;
 	
 	public EnergyManager (UDPConnectionHandler robot, int chargeStation) {
 		
@@ -72,11 +69,11 @@ public class EnergyManager {
 		if (rs.getPulseLength() <= myPulslength + TOLERANCE && 
 			rs.getPulseLength() >= myPulslength - TOLERANCE) {
 			
-			rc = new RobotCommand(false, false, 10, 10);
+			rc = new RobotCommand(false, false, 15, 15);
 			
 		} else {
 			
-			rc = new RobotCommand(false, false, -5, 5);
+			rc = new RobotCommand(false, false, -10, 10);
 			
 		}
 		
@@ -92,6 +89,9 @@ public class EnergyManager {
 			
 			blink = new BlinkTask();
 			blink.start();
+			
+			System.out.println("neuer blinktask");
+			System.out.println(blink.isAlive());
 		}
 	}
 	

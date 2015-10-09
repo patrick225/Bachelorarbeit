@@ -36,7 +36,7 @@ public class UDPConnectionHandler {
 
 		cc.update();
 		System.out.println(new RobotStatus(packet.getData()));
-//		energyListener.messageReceived(this, packet.getData());
+		energyListener.messageReceived(this, packet.getData());
 		if (messageListener != null && !blockControllerCommands) {
 			messageListener.messageReceived(this, packet.getData());
 		}
