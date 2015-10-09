@@ -101,13 +101,13 @@ public class CommandTranslater {
 		int dir = JSONUtil.jsonObjToInt(command.get("direction"));
 		
 		
-		double ratioLR = Math.pow(2, (double) (dir/100));
+		double ratioLR = Math.pow(2,((double) dir/50));
 		
 		if (ratioLR > 1) {
-			robot.setMotorRight((int) (robot.getMotorLeft() / ratioLR)); 
+			robot.setMotorRight((int) ((double) robot.getMotorLeft() / ratioLR)); 
 		}
 		if (ratioLR < 1) {
-			robot.setMotorLeft((int) (robot.getMotorRight() * ratioLR));
+			robot.setMotorLeft((int) ((double) robot.getMotorRight() * ratioLR));
 		}
 		
 		return robot;
