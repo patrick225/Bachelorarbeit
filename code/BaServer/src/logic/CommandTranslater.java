@@ -7,7 +7,8 @@ import org.json.simple.JSONObject;
 public class CommandTranslater {
 
 	private static final int CONTROLLER_WEBAPP = 1;
-	private static final int CONTROLLER_ANDROIDAPP = 2;
+	private static final int CONTROLLER_DIFFERENTIAL = 2;
+	private static final int CONTROLLER_RCREMOTE = 3;
 	
 	
 	public static RobotCommand translateCommand(JSONObject command) {
@@ -19,9 +20,11 @@ public class CommandTranslater {
 		case CONTROLLER_WEBAPP:
 			result = translateWASD(command);
 			break;
-		case CONTROLLER_ANDROIDAPP:
+		case CONTROLLER_DIFFERENTIAL:
 			result = translateDifferential(command);
 			break;
+		case CONTROLLER_RCREMOTE:
+			result = translateRCRemote(command);
 			
 		}
 		
@@ -81,6 +84,31 @@ public class CommandTranslater {
 				JSONUtil.jsonObjToBoolean(command.get("shot")), 
 				JSONUtil.jsonObjToInt(command.get("motorLeft")), 
 				JSONUtil.jsonObjToInt(command.get("motorRight")));
+		
+		return robot;
+	}
+	
+	
+	private static RobotCommand translateRCRemote(JSONObject command) {
+		
+		
+		RobotCommand robot = new RobotCommand();
+		robot.setKick(JSONUtil.jsonObjToBoolean(command.get("shot")));
+		
+		robot.setMotorLeft(JSONUtil.jsonObjToInt(command.get("velocity")));
+		robot.setMotorRight(JSONUtil.jsonObjToInt(command.get("velocity")));
+		
+		int dir = JSONUtil.jsonObjToInt(command.get("direction"));
+		
+		
+		double ratioLR = Math.pow(2, (double) (dir/100));
+		
+		if (ratioLR > 1) {
+			robot.setMotorRight((int) (robot.getMotorLeft() / ratioLR)); 
+		}
+		if (ratioLR < 1) {
+			robot.setMotorLeft((int) (robot.getMotorRight() * ratioLR));
+		}
 		
 		return robot;
 	}
