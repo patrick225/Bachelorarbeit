@@ -34,7 +34,6 @@ public abstract class ControlActivity extends Activity {
         countP2 = (TextView) findViewById(R.id.countP2Text);
 
         connection = Websocket.getInstance(connectionListener);
-
     }
 
     @Override

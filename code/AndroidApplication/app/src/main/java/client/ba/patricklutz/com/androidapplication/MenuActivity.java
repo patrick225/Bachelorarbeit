@@ -34,7 +34,7 @@ public class MenuActivity extends Activity {
             intent = new Intent(this, ControlActivityDifferential.class);
         }
         if (steuerung2.isChecked()) {
-            intent = new Intent(this, MainActivity_Wheel.class);
+            intent = new Intent(this, ControlActivityRCRemote.class);
         }
 
         startActivity(intent);

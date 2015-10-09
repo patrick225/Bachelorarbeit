@@ -2,6 +2,8 @@ package client.ba.patricklutz.com.androidapplication;
 
 import android.content.Context;
 
+import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,9 +27,8 @@ public class CommandManager {
      */
     private static final long SHOTDELAY = 500;
 
-    private long lastShot;
 
-    private Command command;
+    private JSONObject command;
     private Websocket channel;
     private Context mainContext;
 
@@ -36,8 +37,6 @@ public class CommandManager {
         mainContext = context;
         channel = Websocket.getInstance();
 
-        command = new Command(0,0,false);
-        lastShot = 0;
         new ShotDetector(context, this);
 
     }
@@ -51,6 +50,25 @@ public class CommandManager {
         timer.schedule(new DoFrequently(), 0, PERIOD);
     }
 
+    public void setCommandValue(String key, boolean value) {
+        try {
+            if (value) {
+                command.put(key, "true");
+            } else {
+                command.put(key, "false");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setCommandValue(String key, int value) {
+        try {
+            command.put(key, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Stop sending commands to server
@@ -61,35 +79,21 @@ public class CommandManager {
     }
 
 
-    public void setShot(boolean shot) {
-        command.setShot(shot);
-    }
-
-
-    public void setVeloLeft(int velocity) {
-        command.setVeloLeft(velocity);
-    }
-
-
-    public void setVeloRight(int velocity) {
-        command.setVeloRight(velocity);
-    }
-
-
     private class DoFrequently extends TimerTask {
 
         @Override
         public void run() {
 
-            // want to shoot but last shot was recently
-            if (command.isShot() &&
-                    (System.currentTimeMillis() - lastShot) < SHOTDELAY)
-                command.setShot(false);
 
-            if (command.isShot())
-                lastShot = System.currentTimeMillis();
+            channel.send(command.toString());
 
-            channel.send(command.getCommandJSON());
+            try {
+                if (command.getBoolean("shot")) {
+                    command.put("shot", "false");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
@@ -27,23 +28,25 @@
             android:layout_alignParentBottom="false"
             android:layout_centerHorizontal="true" />
 
-        <client.ba.patricklutz.com.androidapplication.SeekbarVertical
-            android:layout_width="50dp"
-            android:layout_height="300dp"
-            android:id="@+id/seekBarLeft"
+        <client.ba.patricklutz.com.androidapplication.SeekbarHorizontal
+            android:layout_width="300dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:id="@+id/seekBarDirection"
             android:max="100"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
             android:progress="50"
             android:progressDrawable="@android:color/transparent"/>
 
         <client.ba.patricklutz.com.androidapplication.SeekbarVertical
             android:layout_width="50dp"
             android:layout_height="300dp"
-            android:id="@+id/seekBarRight"
-            android:max="100"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/seekBarVelocity"
+            android:max="100"
             android:progress="50"
             android:progressDrawable="@android:color/transparent"/>
 
@@ -52,10 +55,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="0"
-            android:id="@+id/countP1Text"
-            android:layout_alignTop="@+id/seekBarLeft"
-            android:layout_toEndOf="@+id/seekBarLeft"
-            android:layout_toRightOf="@+id/seekBarLeft"/>
+            android:id="@+id/countP1Text"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -63,15 +63,10 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="0"
             android:id="@+id/countP2Text"
-            android:layout_alignTop="@+id/seekBarRight"
-            android:layout_toStartOf="@+id/seekBarRight"
-            android:layout_toLeftOf="@+id/seekBarRight"/>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
-
-
-
-
-
 
 </RelativeLayout>

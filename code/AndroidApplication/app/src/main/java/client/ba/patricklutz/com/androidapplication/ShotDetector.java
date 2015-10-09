@@ -46,7 +46,7 @@ public class ShotDetector implements SensorEventListener {
 
                 if (speed > SHAKE_THRESHOLD) {
                     Log.d("Sensor", "shake detected speed: " + speed);
-                    callback.setShot(true);
+                    callback.setCommandValue("shot", true);
 
                 }
                 last_x = x;

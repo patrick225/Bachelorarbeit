@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * This is the first Controlltype via Seekbars for left and right motor
  *
@@ -34,9 +37,12 @@ public class ControlActivityDifferential extends ControlActivity {
 
         leftSeekbar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
         rightSeekbar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
+
+        cmdManager.setCommandValue("controllerType", 2);
+        cmdManager.setCommandValue("motorLeft", 0);
+        cmdManager.setCommandValue("motorRight", 0);
+        cmdManager.setCommandValue("shot", false);
     }
-
-
 
 
     final SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -48,10 +54,10 @@ public class ControlActivityDifferential extends ControlActivity {
 
             switch (seekBar.getId()) {
                 case R.id.seekBarLeft:
-                    cmdManager.setVeloLeft(progress - SLIDER_ZEROPOINT);
+                    cmdManager.setCommandValue("motorLeft", progress - SLIDER_ZEROPOINT);
                     break;
                 case R.id.seekBarRight:
-                    cmdManager.setVeloRight(progress - SLIDER_ZEROPOINT);
+                    cmdManager.setCommandValue("motorRight", progress - SLIDER_ZEROPOINT);
                     break;
             }
         }
@@ -67,31 +73,6 @@ public class ControlActivityDifferential extends ControlActivity {
         }
     };
 
-
-
-
-//    Handler stateHandler = new Handler() {
-//        public void handleMessage(Message msg) {
-//
-//            GameState state = (GameState) msg.obj;
-//            powerBar.setProgress(state.getPower());
-//            countP1.setText(String.valueOf(state.getCountP1()));
-//            countP2.setText(String.valueOf(state.getCountP2()));
-//        }
-//    };
-//
-//    Handler connectionHandler = new Handler() {
-//      public void handleMessage(Message msg) {
-//          String message;
-//          switch (msg.arg1) {
-//              case Channel.STATE_DISCONNECTED:
-//                  message = "Connection refused!";
-//                  Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                  finish();
-//                  break;
-//          }
-//      }
-//    };
 
 }
 

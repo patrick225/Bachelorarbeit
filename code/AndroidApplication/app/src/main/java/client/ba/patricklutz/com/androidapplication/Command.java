@@ -12,11 +12,11 @@ import org.json.JSONObject;
  */
 public class Command {
 
-    private static final int CONTROLLERTYPE = 2;
+
     private static final int packagesize = 3;
     private int veloLeft;
     private int veloRight;
-
+    private int controllertype = 2;
 
 
     private boolean shot;
@@ -36,6 +36,7 @@ public class Command {
     public void setShot(boolean shot) {
         this.shot = shot;
     }
+    public void setControllertype(int controllertype) {this.controllertype = controllertype;}
 
     public int getVeloRight() {
         return veloRight;
@@ -69,7 +70,7 @@ public class Command {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("controllerType", CONTROLLERTYPE);
+            jsonObject.put("controllerType", controllertype);
 
             jsonObject.put("motorLeft", veloLeft);
             jsonObject.put("motorRight", veloRight);
