@@ -20,7 +20,7 @@ public class Websocket extends WebSocketClient {
     static URI serverURI;
     static {
         try {
-            serverURI = new URI("ws://192.168.178.28:8080/control/");
+            serverURI = new URI("ws://134.60.145.193:8080/control/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

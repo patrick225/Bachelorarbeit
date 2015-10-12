@@ -1,6 +1,7 @@
 package client.ba.patricklutz.com.androidapplication;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,9 @@ import android.widget.RadioButton;
 
 
 public class MenuActivity extends Activity {
+
+
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class MenuActivity extends Activity {
             intent = new Intent(this, ControlActivityDifferential.class);
         }
         if (steuerung2.isChecked()) {
-            intent = new Intent(this, MainActivity_Wheel.class);
+            intent = new Intent(this, ControlActivityRCRemote.class);
         }
 
         startActivity(intent);
@@ -46,6 +50,7 @@ public class MenuActivity extends Activity {
         Websocket websocket = Websocket.getInstance(new ConnectionListener() {
             @Override
             public void onConnectionEstablished() {
+                progress.dismiss();
                 startControllIntent();
             }
 
@@ -55,6 +60,11 @@ public class MenuActivity extends Activity {
             }
         });
         websocket.connect();
+        progress = new ProgressDialog(this);
+        progress.setTitle("Wait");
+        progress.setMessage("Connecting to Server...");
+        progress.setCancelable(false);
+        progress.show();
     }
 
 

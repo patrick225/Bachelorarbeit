@@ -37,7 +37,7 @@ public class CommandTask extends TimerTask {
 	
 	
 	public void setCommand(RobotCommand command) {
-		bufferedCommandRobot = command;
+		bufferedCommandRobot = CommandTranslater.filterInvalidMotorvalues(command, bufferedCommandRobot);
 		stopCount = 0;
 	}
 	

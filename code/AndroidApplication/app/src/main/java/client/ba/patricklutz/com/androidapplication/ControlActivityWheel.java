@@ -9,12 +9,9 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 
@@ -24,10 +21,7 @@ import java.io.File;
  *
  * @author privat-patrick
  */
-public class MainActivity_Wheel extends Activity {
-
-
-    CommandManager cmdManager;
+public class ControlActivityWheel extends ControlActivity {
 
     private float[] gravity = new float[3];
     private float[] magnetic = new float[3];
@@ -40,78 +34,13 @@ public class MainActivity_Wheel extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_activity__wheel);
+        setContentView(R.layout.activity_control_activity__wheel);
 
         power = (SeekbarVertical) findViewById(R.id.seekBarLeft);
-
-        ImageView imgView = (ImageView) findViewById(R.id.imageview);
-
-        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        imgView.setImageBitmap(BitmapFactory.decodeFile(dir.getAbsolutePath() + "/27918-affe-zeigt-stinkefinger.jpg"));
-
-        Intent intent = getIntent();
-
-//        cmdManager = new123el(intent.getIntExtra(MenuActivity.EXTRA_CHANNEL, Channel.TYPE_WLAN)));
 
         snsMngr = (SensorManager) getSystemService(SENSOR_SERVICE);
         gravitySensor = snsMngr.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magneticSensor = snsMngr.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
-    }
-
-//
-//    /**
-//     * Returns a working Channel for the given Connectiontype
-//     *
-//     * @param connection type of connection
-//     * @return working channel
-//     */
-//    private Channel getChannel(int connection) {
-//        Channel channel = null;
-//        switch (connection) {
-//            case Channel.TYPE_WLAN:
-//                channel = new TCPClient(new Handler() {
-//                    public void handleMessage(Message msg) {
-//
-//                        String message;
-//                        switch (msg.arg1) {
-//                            case Channel.STATE_CONNECTED:
-//                                message = "Connected to Server!";
-//                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                                break;
-//                            case Channel.STATE_DISCONNECTED:
-//                                message = "Connection refused!";
-//                                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
-//                                finish();
-//                                break;
-//                        }
-//                    }
-//                });
-//                break;
-//            case Channel.TYPE_BLUETOOTH:
-//                //@TODO bluetooth channel zurueckgeben
-//                break;
-//
-//        }
-//        return channel;
-//    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        snsMngr.registerListener(sensorListener, gravitySensor, SensorManager.SENSOR_DELAY_GAME);
-        snsMngr.registerListener(sensorListener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
-        cmdManager.start();
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        snsMngr.unregisterListener(sensorListener);
-        cmdManager.stop();
-        super.onDestroy();
 
     }
 
@@ -149,15 +78,13 @@ public class MainActivity_Wheel extends Activity {
             values[i] = degrees.floatValue();
         }
 
-        TextView tmp = (TextView) findViewById(R.id.tmpView);
-        TextView tmp1 = (TextView) findViewById(R.id.tmpView1);
-        TextView tmp2 = (TextView) findViewById(R.id.tmpView2);
+        TextView tmp = (TextView) findViewById(R.id.editText);
+        TextView tmp1 = (TextView) findViewById(R.id.editText2);
+        TextView tmp2 = (TextView) findViewById(R.id.editText3);
         tmp.setText("" + values[0]);
         tmp1.setText("" + values[1]);
         tmp2.setText("" + values[2]);
 
-        cmdManager.setVeloLeft(getVeloLeft(values[1]));
-        cmdManager.setVeloRight(getVeloRight(values[1]));
     }
 
 
@@ -196,13 +123,5 @@ public class MainActivity_Wheel extends Activity {
     }
 
 
-    /**
-     * Button on-click to shoot
-     *
-     * @param view
-     */
-    public void setFire(View view) {
-        cmdManager.setShot(true);
-    }
 
 }

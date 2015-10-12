@@ -6,4 +6,5 @@
     <string name="title_activity_menu">RoboSoccer</string>
     <string name="title_activity_main_activity__wheel">MainActivity_Wheel</string>
     <string name="game_view">Game</string>
+    <string name="title_activity_control_activity_rcremote">ControlActivityRCRemote</string>
 </resources>
