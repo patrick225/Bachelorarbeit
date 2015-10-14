@@ -17,10 +17,14 @@ public class EnergyManager {
 	
 	private static final byte TOLERANCE = (byte) 0x50;
 	
+	private static final long TIMEOUT = 5000;
+	
 	private byte myPulslength;
 	
 	private UDPConnectionHandler robot;
 	private BlinkTask blink;
+	private long lastSignal = System.currentTimeMillis();
+	private int sequenceCounter = 0;
 	
 	public EnergyManager (UDPConnectionHandler robot, int chargeStation) {
 		
@@ -66,15 +70,22 @@ public class EnergyManager {
 		
 		
 		RobotCommand rc = null;
+		// got signal
 		if (rs.getPulseLength() <= myPulslength + TOLERANCE && 
 			rs.getPulseLength() >= myPulslength - TOLERANCE) {
 			
 			rc = new RobotCommand(false, false, 15, 15);
-			
+			lastSignal = System.currentTimeMillis();
+			sequenceCounter = 0;
+		} 
+		// no signal for too long time, drive random for 5 sequences
+		else if(lastSignal < System.currentTimeMillis() - TIMEOUT  && sequenceCounter < 5) {
+			rc = new RobotCommand(false, false, 15, 15);
+			sequenceCounter++;
 		} else {
 			
 			rc = new RobotCommand(false, false, -10, 10);
-			
+			sequenceCounter = 0;
 		}
 		
 		robot.send(rc.getBytes());
