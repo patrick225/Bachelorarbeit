@@ -49,8 +49,30 @@ Die Verbindung wird über einen 3-Wege-Handshake hergestellt. Hierbei sendet ein
 
 Mithilfe von geordneten Sequenznummern und Acknowledgments werden alle empfangene Pakete bestätigt. Durch das Fehlen einer Sequenznummer erkennt der Empfänger den Verlust eines Pakets und teilt daraufhin dem Sender mit, dass es nicht angekommen ist. Für den Fall eines Verlusts des Acknowledgments, hat der Sender einen Timer, welcher nach einiger Zeit eine Retransmission des Pakets veranlasst, sofern kein Acknowledgment ankommen sollte.
 
-Flow-Control:
 
 
 
-Congestion-Control
+HTTP
+
+Das Hypertext Transfer Protocol ist ein zustandsloses Datenübertragungsprotokoll, das auf der Anwendungsschicht arbeitet. Am meisten wird das Protokoll für den Aufbau von Internetseiten verwendet, also von einem Webbrowser, jedoch ist das Aufgabenfeld nicht darauf beschränkt.
+
+HTTP arbeitet mittels zwei Befehlsarten, dem Request und dem Response. Möchte ein Browser eine Datei von einem Server laden, so sendet er einen Request mit dem Namen der Datei. \\
+Die möglichen Befehle sind: 
+\begin{description}
+	\item[GET] fordert eine Ressource auf dem Server an
+	\item[POST] sendet Daten zur weiteren Verarbeitung zum Server
+	\item[HEAD] fordert lediglich den HEADER eines Responses an, der auf einen GET-Request folgend würde
+	\item[PUT] lädt eine Ressource auf den Server
+	\item[DELETE] löscht eine Ressource auf dem Server (Wird kaum verwendet)
+	\item[TRACE] sendet die Anfrage, so wie sie empfangen wurde zurück
+	\item[OPTIONS] liefert eine Liste mit den vom Server unterstützten Optionen
+	\item[CONNECT] wird für SSL-Tunneling verwendet
+\end{description} Nachdem der Request beim Server eingegangen ist und verarbeitet wurde, sendet er einen Response. In diesem Response sind Informationen über Server und Datei enthalten, sowie die Nutzdaten, also die angefragte Datei. In Abbildung \ref{fig:http_request_response} ist eine solche Kommunikation dargestellt.
+-- 
+\begin{figure}
+	\includegraphics[width=\textwidth]{images/http_request_response.pdf}
+	\caption{HTTP Kommunikation}
+	\label{fig:http_request_response}
+\end{figure}
+
+
