@@ -10,16 +10,16 @@ import connection.UDPConnectionHandler;
 public class EnergyManager {
 
 	// threshold on 15 %
-	private static final byte POWER_THRESHOLD = (byte) 0x64;
+	private static final int POWER_THRESHOLD = 100;
 	
-	private static final byte PULSELENGTH_GOAL1 = (byte) 0x64;
-	private static final byte PULSELENGTH_GOAL2 = (byte) 0xFF;
+	private static final int PULSELENGTH_GOAL1 = 80;
+	private static final int PULSELENGTH_GOAL2 = 5000;
 	
-	private static final byte TOLERANCE = (byte) 0x50;
+	private static final int TOLERANCE = 40;
 	
 	private static final long TIMEOUT = 5000;
 	
-	private byte myPulslength;
+	private int myPulslength;
 	
 	private UDPConnectionHandler robot;
 	private BlinkTask blink;
@@ -97,7 +97,7 @@ public class EnergyManager {
 		// No Blinktask existing, or one existing but not alive
 		if (blink == null) {
 			
-			blink = new BlinkTask();
+			blink = new BlinkTask(myPulslength);
 			blink.start();
 		}
 	}
@@ -125,13 +125,18 @@ public class EnergyManager {
 	private class BlinkTask extends Thread {
 
 		Process process;
+		int length;
+		
+		public BlinkTask(int pulslength) {
+			length = pulslength;
+		}
 		
 		@Override
 		public void run() {
 
 			System.out.println("Start Blink:");
 			try {
-			    process = new ProcessBuilder("./test").start();
+			    process = new ProcessBuilder("./blinkIR " + length).start();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

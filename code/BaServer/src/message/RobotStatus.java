@@ -19,8 +19,17 @@ public class RobotStatus {
 		return status[1];
 	}
 	
-	public byte getPulseLength() {
-		return status[2];
+//	public byte getPulseLength() {
+//		return status[2];
+//	}
+	
+	public int getPulseLength() {
+		
+		byte[] bytes = {0, 0, 0, status[2]};
+		
+		int x = java.nio.ByteBuffer.wrap(bytes).getInt();
+		
+		return x;
 	}
 
 	
@@ -28,6 +37,6 @@ public class RobotStatus {
 	public String toString() {
 		
 		return "Akku: " + status[1] + "\n"
-				+ "PulsLänge: " + status[2];
+				+ "PulsLänge: " + getPulseLength();
 	}
 }
