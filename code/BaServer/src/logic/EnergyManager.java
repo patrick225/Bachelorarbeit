@@ -1,6 +1,8 @@
 package logic;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import message.RobotCommand;
 import message.RobotStatus;
@@ -12,10 +14,8 @@ public class EnergyManager {
 	// threshold on 15 %
 	private static final int POWER_THRESHOLD = 100;
 	
-	private static final int PULSELENGTH_GOAL1 = 80;
+	private static final int PULSELENGTH_GOAL1 = 10000;
 	private static final int PULSELENGTH_GOAL2 = 5000;
-	
-	private static final int TOLERANCE = 40;
 	
 	private static final long TIMEOUT = 5000;
 	
@@ -71,8 +71,7 @@ public class EnergyManager {
 		
 		RobotCommand rc = null;
 		// got signal
-		if (rs.getPulseLength() <= myPulslength + TOLERANCE && 
-			rs.getPulseLength() >= myPulslength - TOLERANCE) {
+		if (rs.seeStation()) {
 			
 			rc = new RobotCommand(false, false, 15, 15);
 			lastSignal = System.currentTimeMillis();
@@ -136,7 +135,18 @@ public class EnergyManager {
 
 			System.out.println("Start Blink:");
 			try {
-			    process = new ProcessBuilder("./blinkIR " + length).start();
+				
+				
+			    process = new ProcessBuilder("./blinkIR", String.valueOf(length)).start();
+			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			    StringBuilder builder = new StringBuilder();
+			    String line = null;
+			    
+			    while ( (line = reader.readLine()) != null) {
+			    	builder.append(line);
+			    	builder.append(System.getProperty("line.seperator"));
+			    }
+			    System.out.println(builder.toString());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
