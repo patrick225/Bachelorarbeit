@@ -17,14 +17,18 @@ public class EnergyManager {
 	private static final int PULSELENGTH_GOAL1 = 10000;
 	private static final int PULSELENGTH_GOAL2 = 5000;
 	
-	private static final long TIMEOUT = 5000;
+	private static final long TIMEOUT = 1500;
 	
 	private int myPulslength;
 	
 	private UDPConnectionHandler robot;
 	private BlinkTask blink;
 	private long lastSignal = System.currentTimeMillis();
-	private int sequenceCounter = 0;
+	private int sequenceCounterTurn = 0;
+	private int sequenceCounterDrive = 0;
+	
+	private int hitCounter = 0;
+	private int stopTurnCounter = 0;
 	
 	public EnergyManager (UDPConnectionHandler robot, int chargeStation) {
 		
@@ -69,22 +73,47 @@ public class EnergyManager {
 	private void findChargeStation (RobotStatus rs) {
 		
 		
-		RobotCommand rc = null;
+		RobotCommand rc = new RobotCommand(false, false, 0, 0);
 		// got signal
-		if (rs.seeStation()) {
+		if (rs.seeStation()) stopTurnCounter++;
+		
+		if (rs.seeStation() && stopTurnCounter < 2) {
 			
-			rc = new RobotCommand(false, false, 15, 15);
+			hitCounter++;
+			stopTurnCounter = 0;
+			sequenceCounterDrive = 0;
+			sequenceCounterTurn = 0;
+			
 			lastSignal = System.currentTimeMillis();
-			sequenceCounter = 0;
-		} 
-		// no signal for too long time, drive random for 5 sequences
-		else if(lastSignal < System.currentTimeMillis() - TIMEOUT  && sequenceCounter < 5) {
-			rc = new RobotCommand(false, false, 15, 15);
-			sequenceCounter++;
-		} else {
 			
-			rc = new RobotCommand(false, false, -10, 10);
-			sequenceCounter = 0;
+			
+			rc = new RobotCommand(false, false, 0, 0);
+			
+			// drive only, if seen for longer time
+			if (hitCounter > 2) {
+				rc = new RobotCommand(false, false, 20, 20);
+			}
+			
+			
+		} else {
+			hitCounter = 0;
+			// no signal for too long time, turn around for 5 sequences
+			if(lastSignal < System.currentTimeMillis() - TIMEOUT  && sequenceCounterTurn < 75) {
+				rc = new RobotCommand(false, false, -15, 15);
+				sequenceCounterTurn++;
+			}
+			
+			if (sequenceCounterTurn >= 75 && sequenceCounterDrive < 15) {
+				rc = new RobotCommand(false, false, 15, 15);
+				sequenceCounterDrive++;
+			}
+			if (sequenceCounterDrive >= 15) {
+				hitCounter = 0;
+				stopTurnCounter = 0;
+				sequenceCounterDrive = 0;
+				sequenceCounterTurn = 0;
+				lastSignal = System.currentTimeMillis();
+			}
 		}
 		
 		robot.send(rc.getBytes());
