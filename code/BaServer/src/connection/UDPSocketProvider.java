@@ -65,8 +65,8 @@ public class UDPSocketProvider implements Runnable {
 		for (int i = 0; i < robots.length; i++) {
 			if (who == robots[i]) {
 				SocketAddress addr = mapping.inverse().get(who);
-				DatagramPacket packet = new DatagramPacket(data, 0, data.length, addr);
 				try {
+					DatagramPacket packet = new DatagramPacket(data, 0, data.length, addr);
 					socket.send(packet);
 				} catch (IOException e) {
 					e.printStackTrace();
