@@ -1,0 +1,18 @@
+\section{Kommunikation}
+\label{sec:kommunikation}
+
+Da die Roboter, sowie auch die Controller über Funk mit dem Server kommunizieren sollten, gab es an dieser Stelle einige Entscheidungen. \\
+Generell musste hierbei zwischen der Roboter-Server und der Controller-Server Kommunikation unterschieden werden. Für beide Wege gab es verschiedene Anforderungen. 
+Da der Server in Nähe der Roboter aufgestellt werden soll spielt hierbei die Übertragungsdistanz keine sehr große Rolle, weshalb Bluetooth denkbar wäre, auch WLAN wäre eine gute Lösung, da in den meisten Gebäuden ein drahtloses Netzwerk vorhanden ist. Selbst optische Übertragungsverfahren wären denkbar (und werden sogar verwendet, siehe Kapitel %TODO ladestation
+).
+
+Die Hauptanforderungen an die Roboter-Server Übertragung sind Übertragungsgeschwindigkeit und Ausfallsicherheit. Eine energiesparende Lösung ist aufgrund der begrenzten Akkukapazität der Roboter wünschenswert. \\
+Da die Roboter ständig in Bewegung sind und Richtungsänderungen schnell und zuverlässig verarbeitet werden sollen, wurde die optische Übertragung ausgeschlossen. Bei einem solchen Verfahren müsste ein ständiger Sichtkontakt zwischen Sender und Empfänger bestehen, was eine robuste Übertragung beim Fahren um Hindernisse nahezu ausschließt. \\
+ Bluetooth würde die Anforderung der Ausfallsicherheit erfüllen, da die Roboter auf einem begrenzten Gebiet zum Einsatz kommen und die Distanz deshalb ausreichend gering wäre. Auch in Punkto Energieeffizienz wäre mit Bluetooth Low Energy eine gute Lösung gefunden, da es im Vergleich zu WLAN beim Senden nur in etwa ein sechstel des Stroms verbraucht %TODO( Quelle MUC )
+. \\
+WLAN bringt eine hohe Ausfallsicherheit, da die Verbindung in Gebäuden als nahezu Konstant anzunehmen ist. Da der Server im gleichen Netzwerk hängt wie der Roboter, ist es bei dieser Übertragung irrelevant wie weit die beiden Geräte tatsächlich voneinander entfernt sind, solange sie sich eben im selben Netzwerk befinden, was gegenüber Bluetooth mehr Spielraum für die Größe des Spielfeldes übrig lässt. Was die Übertragungsgeschwindigkeit angeht, ist WLAN um ein vielfaches schneller (stark von Version abhängig). \\
+
+Aufgrund der besseren Flexibilität und der höheren Übertragungsrate fiel an dieser Stelle die Entscheidung auf \textbf{WLAN}. Der Vorteil von Bluetooth bestünde hier lediglich in der besseren Energieeffizienz, jedoch ist die Akkubelastung, die durch die Kommunikation eintritt im Vergleich zu der der Motoren wesentlich geringer. Dadurch fällt die vergleichsweise hohe Belastung von ca. 300mA bei WLAN im Gegensatz zu ca 50mA bei Bluetooth (beim Sendevorgang) nicht so sehr ins Gewicht, wie der Stromverbrauch, der durch die Motoren und den Schussapparat verursacht wird. %TODO nachfragen wieviel die überhaupt ziehen, nicht dass die kaum was brauchen und ich den akku mit befehlen leer zieh..
+
+
+Für die Kommunikation zwischen Controller und Roboter gelten prinzipiell die gleichen Anforderungen, jedoch andere Rahmenbedingungen. Da die mobilen in den meisten Fällen ebenfalls über einen Akku mit Strom versorgt werden, spielt hier auch der Aspekt der Energieeffizienz eine Rolle. Weil die Controller aber den Server auch von weiter entfernten Orten erreichen sollen ist Bluetooth ungeeignet. Deshalb wurde hierfür ebenfalls WLAN gewählt.
