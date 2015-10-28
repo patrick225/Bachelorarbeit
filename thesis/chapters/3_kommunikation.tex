@@ -1,6 +1,7 @@
 \section{Kommunikation}
 \label{sec:kommunikation}
 
+\subsection*{Übertragungstechnologie}
 Da die Roboter, sowie auch die Controller über Funk mit dem Server kommunizieren sollten, gab es an dieser Stelle einige Entscheidungen. \\
 Generell musste hierbei zwischen der Roboter-Server und der Controller-Server Kommunikation unterschieden werden. Für beide Wege gab es verschiedene Anforderungen. 
 Da der Server in Nähe der Roboter aufgestellt werden soll spielt hierbei die Übertragungsdistanz keine sehr große Rolle, weshalb Bluetooth denkbar wäre, auch WLAN wäre eine gute Lösung, da in den meisten Gebäuden ein drahtloses Netzwerk vorhanden ist. Selbst optische Übertragungsverfahren wären denkbar (und werden sogar verwendet, siehe Kapitel %TODO ladestation
@@ -15,4 +16,11 @@ WLAN bringt eine hohe Ausfallsicherheit, da die Verbindung in Gebäuden als nahe
 Aufgrund der besseren Flexibilität und der höheren Übertragungsrate fiel an dieser Stelle die Entscheidung auf \textbf{WLAN}. Der Vorteil von Bluetooth bestünde hier lediglich in der besseren Energieeffizienz, jedoch ist die Akkubelastung, die durch die Kommunikation eintritt im Vergleich zu der der Motoren wesentlich geringer. Dadurch fällt die vergleichsweise hohe Belastung von ca. 300mA bei WLAN im Gegensatz zu ca 50mA bei Bluetooth (beim Sendevorgang) nicht so sehr ins Gewicht, wie der Stromverbrauch, der durch die Motoren und den Schussapparat verursacht wird. %TODO nachfragen wieviel die überhaupt ziehen, nicht dass die kaum was brauchen und ich den akku mit befehlen leer zieh..
 
 
-Für die Kommunikation zwischen Controller und Roboter gelten prinzipiell die gleichen Anforderungen, jedoch andere Rahmenbedingungen. Da die mobilen in den meisten Fällen ebenfalls über einen Akku mit Strom versorgt werden, spielt hier auch der Aspekt der Energieeffizienz eine Rolle. Weil die Controller aber den Server auch von weiter entfernten Orten erreichen sollen ist Bluetooth ungeeignet. Deshalb wurde hierfür ebenfalls WLAN gewählt.
+Für die Kommunikation zwischen Controller und Server gelten prinzipiell die gleichen Anforderungen, jedoch andere Rahmenbedingungen. Zusätzlich soll es möglich sein den Server mit seinem Controller auch außerhalb der Universität zu erreichen. Da die mobilen Endgeräte in den meisten Fällen ebenfalls über einen Akku mit Strom versorgt werden, spielt hier auch der Aspekt der Energieeffizienz eine Rolle. Weil die Controller den Server aber auch von weiter entfernten Orten erreichen sollen, die auch außerhalb der Universität liegen können, ist hier lediglich eine Kombination verschiedener Übertragungstechnologien möglich. Deshalb fiel die Entscheidung hierbei ebenfalls auf die Netzwerkvariante, da hiermit das Übertragungsmedium keine entscheidende Rolle spielt. So ist es zum Beispiel möglich sich von zu Hause mittels VPN Zugang zum Universitäts-Netzwerk zu verschaffen. Diese Entscheidung erlaubt es auf Netzwerkebene zu agieren, ohne sich über die Data-Link Layer Gedanken machen zu müssen.
+
+
+
+
+\subsection*{Übertragungsprotokoll}
+Nach der Entscheidung über die Übertragungstechnologie blieben für die Wahl des Übertragungsprotokolls grundlegend nur wenige Protokolle zur Auswahl. Diese sind UDP und TCP. Alle anderen denkbaren Protokolle basieren letztendlich auf einem der beiden und stellen nur Erweiterungen dar.
+
