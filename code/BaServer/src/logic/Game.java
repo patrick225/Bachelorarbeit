@@ -42,6 +42,7 @@ public class Game {
 			switch (player) {
 			case 1:
 				if (state) {
+					System.out.println("set Device jetzt");
 					player1.setDevices(cm.getRobot1(), cm.getController1());
 					
 				} else {

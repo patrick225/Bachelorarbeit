@@ -58,6 +58,11 @@ public class MenuActivity extends Activity {
             public void onClose() {
 
             }
+
+            @Override
+            public void onMessage(String message) {
+
+            }
         });
         websocket.connect();
         progress = new ProgressDialog(this);

@@ -7,4 +7,5 @@ public interface ConnectionListener {
 
     void onConnectionEstablished();
     void onClose();
+    void onMessage(String message);
 }

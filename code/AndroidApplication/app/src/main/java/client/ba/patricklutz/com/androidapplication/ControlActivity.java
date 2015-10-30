@@ -1,11 +1,15 @@
 package client.ba.patricklutz.com.androidapplication;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Base64;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +19,7 @@ import android.widget.Toast;
 public abstract class ControlActivity extends Activity {
 
     private final int UI_CONN_CLOSED = 1;
+    private final int UI_SET_VIEW = 2;
 
     protected CommandManager cmdManager;
 
@@ -63,15 +68,33 @@ public abstract class ControlActivity extends Activity {
             uiMessage.sendToTarget();
             finish();
         }
+
+        @Override
+        public void onMessage(String message) {
+
+            Message uiMessage = uiHandler.obtainMessage(UI_SET_VIEW, message);
+            uiMessage.sendToTarget();
+
+        }
     };
 
     Handler uiHandler = new Handler(Looper.getMainLooper()) {
+
 
         @Override
         public void handleMessage(Message message) {
 
             if (message.what == UI_CONN_CLOSED) {
                 Toast.makeText(getApplicationContext(), message.obj.toString(), Toast.LENGTH_LONG).show();
+            }
+            if (message.what == UI_SET_VIEW) {
+                ImageView iv = (ImageView) findViewById(R.id.imageview);
+
+                Log.i("bild", message.obj.toString());
+
+                byte[] decodedString = Base64.decode(message.obj.toString(), Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                iv.setImageBitmap(decodedByte);
             }
         }
     };

@@ -1,6 +1,8 @@
 package logic;
-import message.ControllerStatus;
-import message.RobotStatus;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.json.simple.JSONObject;
 
@@ -8,6 +10,8 @@ import connection.OnControllerMessageReceived;
 import connection.OnRobotMessageReceived;
 import connection.UDPConnectionHandler;
 import connection.WebsocketSocket;
+import message.ControllerStatus;
+import message.RobotStatus;
 
 
 public class Player {
@@ -22,9 +26,13 @@ public class Player {
 	private CommandTask commandTaskToRobot;
 	private CommandTask commandTaskToController;
 	
+	private byte[] pictureData = new byte[67425];
+	
 	
 	
 	public void setDevices(UDPConnectionHandler robot, WebsocketSocket controller) {
+		
+		System.out.println("Set Devices");
 		this.controller = controller;
 		this.robot = robot;
 		
@@ -36,6 +44,10 @@ public class Player {
 		
 		controller.registerMessageListener(messageListenerController);						
 		robot.registerMessageListener(messageListenerRobot);
+		
+		
+		
+		
 	}
 	
 	
@@ -90,7 +102,7 @@ public class Player {
 			cs.setAkku(rs.getAkku());
 			cs.setCountP1(Integer.valueOf(scores[0]));
 			cs.setCountP2(Integer.valueOf(scores[1]));
-			commandTaskToController.setCommand(cs);
+//			commandTaskToController.setCommand(cs);
 		
 		}
 	};

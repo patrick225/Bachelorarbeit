@@ -1,0 +1,21 @@
+INDEX VERSION 1.127+/home/patrick/Projects/lutz-ba-soccerrobot-server/code/.metadata/.plugins/org.eclipse.jdt.core
+2672090288.index
+2022878482.index
+67655954.index
+889841499.index
+671188441.index
+3268144973.index
+3538862815.index
+1394239765.index
+2036616.index
+22017265.index
+1318333788.index
+89701995.index
+1057230940.index
+1887786436.index
+289122942.index
+4097184288.index
+4028717242.index
+69835033.index
+991124166.index
+824094145.index

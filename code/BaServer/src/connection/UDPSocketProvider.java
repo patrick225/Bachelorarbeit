@@ -15,7 +15,7 @@ import com.google.common.collect.HashBiMap;
 public class UDPSocketProvider implements Runnable {
 
 	private final static int ROBOT_PORT = 44044;
-	private final static String IP_ROBOT1 = "134.60.130.47";
+	private final static String IP_ROBOT1 = "10.38.5.229";
 	private final static String IP_ROBOT2 = "134.60.145.165";
 	private final static String IP_DEBUG = "134.60.156.40";
 	
@@ -106,21 +106,22 @@ public class UDPSocketProvider implements Runnable {
 	
 	private int getRobotNr(DatagramPacket packet) {
 		
-		try {
-			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT1))) 
-				return 1;
-			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
-				return 2;
-			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
-				return 1;
-			//debug
-			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
-				return 1;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-		return -1;
+		return 1;
+//		try {
+//			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT1))) 
+//				return 1;
+//			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
+//				return 2;
+//			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
+//				return 1;
+//			//debug
+//			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
+//				return 1;
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return -1;
 	}
 	
 	
