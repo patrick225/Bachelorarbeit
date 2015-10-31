@@ -1,11 +1,7 @@
 package connection;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Base64;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -25,34 +21,13 @@ public class WebsocketSocket extends WebSocketAdapter {
 	}
 
     @Override
-    public void onWebSocketConnect(Session sess)
-    {
+    public void onWebSocketConnect(Session sess) {
     	
     	
     	if (playerCount < 2) {  
 	        super.onWebSocketConnect(sess);
-	        try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 	        System.out.println("Socket Connected: " + sess.getRemoteAddress());
-	        byte[] pictureData = new byte[91884];
-	    	try {
-	    		System.out.println("testausgabe");
-				FileInputStream fis = new FileInputStream(new File("/home/patrick/Pictures/testbild.png"));
-				System.out.println(fis.read(pictureData));
-				fis.close();
-				
-				System.out.println("picture sent");
-				send(Base64.getEncoder().encodeToString(pictureData));
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println("Error");
-			}
-	        
+
 	        playerCount++;
 	        cm.registerController(this);
 	        

@@ -19,7 +19,7 @@ public class UDPSocketProvider implements Runnable {
 	private final static String IP_ROBOT2 = "134.60.145.165";
 	private final static String IP_DEBUG = "134.60.156.40";
 	
-	private final static int PACKETSIZE_INCOMING = 12;
+	private final static int PACKETSIZE_INCOMING = 2000;
 	
 	private DatagramSocket socket;
 	
