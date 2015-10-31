@@ -10,8 +10,11 @@ import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 /**
  * Created by privat-patrick on 16.09.2015.
@@ -25,6 +28,7 @@ public abstract class ControlActivity extends Activity {
 
     protected TextView countP1;
     protected TextView countP2;
+    protected ProgressBar akku;
 
     private Websocket connection;
 
@@ -37,6 +41,7 @@ public abstract class ControlActivity extends Activity {
 
         countP1 = (TextView) findViewById(R.id.countP1Text);
         countP2 = (TextView) findViewById(R.id.countP2Text);
+        akku = (ProgressBar) findViewById(R.id.progressBarBattery);
 
         connection = Websocket.getInstance(connectionListener);
     }
@@ -72,11 +77,37 @@ public abstract class ControlActivity extends Activity {
         @Override
         public void onMessage(String message) {
 
-            Message uiMessage = uiHandler.obtainMessage(UI_SET_VIEW, message);
-            uiMessage.sendToTarget();
+            try {
+
+                if (isValidJSON(message)) {
+                    JSONObject obj = new JSONObject(message);
+                    countP1.setText(obj.getString("countP1"));
+                    countP2.setText(obj.getString("countP2"));
+                    akku.setProgress(obj.getInt("akku"));
+                } else {
+
+                    Message uiMessage = uiHandler.obtainMessage(UI_SET_VIEW, message);
+                    uiMessage.sendToTarget();
+                }
+
+            } catch (Exception e) {
+                // Do nothing
+            }
+
+
 
         }
     };
+
+    private boolean isValidJSON(String text) {
+
+        try {
+            new JSONObject(text);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     Handler uiHandler = new Handler(Looper.getMainLooper()) {
 
