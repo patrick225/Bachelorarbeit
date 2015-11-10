@@ -1,10 +1,10 @@
 \chapter{Kommunikation}
 \label{sec:kommunikation}
 
-\subsection*{Übertragungstechnologie}
+\subsection{Übertragungstechnologie}
 Da die Roboter, sowie auch die Controller über Funk mit dem Server kommunizieren sollten, gab es an dieser Stelle einige Entscheidungen. \\
 Generell musste hierbei zwischen der Roboter-Server und der Controller-Server Kommunikation unterschieden werden. Für beide Wege gab es verschiedene Anforderungen. 
-Da der Server in Nähe der Roboter aufgestellt werden soll spielt hierbei die Übertragungsdistanz keine sehr große Rolle, weshalb Bluetooth denkbar wäre, auch WLAN wäre eine gute Lösung, da in den meisten Gebäuden ein drahtloses Netzwerk vorhanden ist. Selbst optische Übertragungsverfahren wären denkbar (und werden sogar verwendet, siehe Kapitel %TODO ladestation
+Da der Server in Nähe der Roboter aufgestellt werden soll spielt hierbei die Übertragungsdistanz keine sehr große Rolle, weshalb Bluetooth denkbar wäre, auch WLAN wäre eine gute Lösung, da in den meisten Gebäuden ein drahtloses Netzwerk vorhanden ist. Selbst optische Übertragungsverfahren wären denkbar (und werden sogar verwendet, siehe Kapitel \ref{sec:infrarot_led}
 ).
 
 Die Hauptanforderungen an die Roboter-Server Übertragung sind Übertragungsgeschwindigkeit und Ausfallsicherheit. Eine energiesparende Lösung ist aufgrund der begrenzten Akkukapazität der Roboter wünschenswert. \\
@@ -20,7 +20,7 @@ Für die Kommunikation zwischen Controller und Server gelten prinzipiell die gle
 
 
 
-\subsection*{Übertragungsprotokoll}
+\subsection{Übertragungsprotokoll}
 Nach der Entscheidung über die Übertragungstechnologie blieben für die Wahl des Übertragungsprotokolls grundlegend nur wenige Protokolle zur Auswahl. Diese sind UDP und TCP. Alle anderen denkbaren Protokolle basieren letztendlich auf einem der beiden und stellen nur Erweiterungen dar.
 
 Bei der Roboter-Server Kommunikation gibt es hierbei einige Dinge zu berücksichtigen. In der Richtung Server-zu-Roboter werden Richtungsänderungen sowie der Befehl zum auslösen des Schussapparats übertragen. Damit Richtungsänderungen nicht auf dem Übertragungsweg verloren gehen wäre ein gesichertes Transportprotokoll die bessere Variante. Mittels TCP wäre hier garantiert, dass keine Pakete verloren gehen und Richtungsänderungen deswegen nicht ausgeführt werden können. Trotzdem wurde für das Übertragungsprotokoll \textbf{UDP} gewählt. Genauer betrachtet bedeutet die Ausfallsicherheit des TCP Protokolls keinen großen Vorteil für die zuverlässige Steuerung. Laut der Schnittstellendefinition %TODO schnittstellendefinition erstellen
