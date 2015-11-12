@@ -114,7 +114,43 @@ Die Oberfläche besteht lediglich aus einem Container für die Bilddaten.
 Über die gewohnte Pfeiltasten-Steuerung kann der Roboter gesteuert werden. Die gedrückten Tasten werden hierbei nur an den Server weitergegeben, erst dort werden sie verarbeitet (siehe Abschnitt \ref{sec:webanwendung_server}).
 
 \section{Android-Anwendung}
-\subsection{RC-Remote Steuerung}
+Als mobile Anwendung für Endgeräte wurde Android ausgewählt, da diese Plattform einige Vorteile bietet. Im Gegensatz zu anderen mobilen Betriebssystemen ist es für Android möglich, ohne Lizenzen oder andere Absprachen zu treffen, Anwendungen zu entwickeln. Außerdem kann hiermit auch in Java entwickelt werden und der Zugriff auf die Sensorik des Geräts ist bereits sehr gut vorbereitet. 
+Die Anwendung vereint mehrere Steuerarten, die sich in ihrem Abstraktionsgrad unterscheiden. Diese werden in den folgenden Abschnitten beschrieben.
+
+Die Software ist wie in Anhang \ref{fig:android_uml} dargestellt konzipiert. Den Mittelpunkt der Android-Anwendung stellt die abstrakte Klasse ControlActivity dar. Jede Steueractivity erbt von dieser Klasse. Damit ist es möglich, das gesamte gemeinsame Verhalten der Steuerungen (Anzeigen des Spielstands und der Bilddaten, Reaktion auf Verbindungsabbrüche etc..) in einer Zentrale zu implementieren. Jede Subklasse implementiert hierbei lediglich die Art, wie Befehle akquiriert werden. 
+
+\begin{figure}[!h]
+	\includegraphics[width=\textwidth]{images/uml_controlactivity_android.pdf}
+	\caption{Klassendiagramm ControlActivities}
+	\label{fig:uml_controlactivity_android}
+\end{figure}
+
+Der Schussauslöser wird in jedem Fall über die Beschleunigungssensorik des Geräts implementiert. Hierbei wird die auf das Gerät wirkende Beschleunigung gemessen und ab einem gewissen Grenzlevel der Schuss herbei geführt, was darin resultiert, dass der Schuss über ein kurzes Schütteln des Geräts erreicht wird.
+Wie auch in der Serverimplementierung gibt es hier eine Klasse, die aktuelle Befehlsänderungen puffert und mit einer Frequenz von 10Hz über den Websocket an den Server sendet.
+Die Klassen Websocket, CommandManager und ControlActivity bilden im Klassendiagramm eine Art Regelkreis der wie folgt interpretiert werden kann. In der ControlActivity wird der Befehl akquiriert, im CommandManager dann in einen Befehl umgewandelt und über den Websocket versendet. Über den Websocket werden anschließend die Bilddaten vom Server empfangen und an die ControlActivity weitergegeben, worauf der Benutzer reagieren kann und seine Steuerbefehle dementsprechend anpasst.
+ 
+
 \subsection{Differential Steuerung}
 \label{sec:differentialsteuerung}
+
+Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertikal ausgerichtete Slider, die jeweils für den linken oder den rechten Motor stehen. Bewegt man den Slider nach oben, beschleunigt der Roboter vorwärts, nach unten dementsprechend rückwärts. Wie oben bereits erwähnt, wird der Schuss über die Sensorik des Geräts ausgelöst. Mit dieser Steuerung sind die genauesten Bewegungen möglich, da man das volle Potenzial ausschöpfen kann. Im Gegensatz zu den anderen Steuerungen werden keine Befehle limitiert. Jedoch wird die Steuerung dadurch sehr schwierig und für Anfänger nur schwer benutzbar.
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[height=.25\textheight]{images/android_diff.pdf}
+	\caption{Schematische Darstellung der Differential Steuerung}
+	\label{fig:android_diff}
+\end{figure}
+
+\subsection{RC-Remote Steuerung}
+
+Ähnlich wie in der Differential Steuerung kommen auch hier Slider zum Einsatz. Der vertikale Slider steht hierbei für die Beschleunigung des Roboters und der horizontale für die Winkel, den der Roboter einschlägt, ähnlich wie man es von einer Fernbedienung von ferngesteuerten Spielzeugautos kennt. Auch hier wird der Schuss wieder über die Sensoren ausgelöst. Ein großer Vorteil gegenüber den Differential Steuerung ist die leichtere Bedienbarkeit. Da nicht mehr jeder Motor separat angesteuert werden muss ist es zum Beispiel sehr einfach, den Roboter einfach nur gerade aus zu steuern. Jedoch ist der maximale Winkel den man einschlagen kann begrenzt und auch die Möglichkeit sich auf der Stelle zu drehen fällt bei dieser Steuerung weg. 
+
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[height=.25\textheight]{images/android_rcremote.pdf}
+	\caption{Schematische Darstellung der RCRemote Steuerung}
+	\label{fig:android_rcremote}
+\end{figure}
 
