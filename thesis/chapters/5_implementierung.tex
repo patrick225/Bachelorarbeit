@@ -4,8 +4,10 @@
 In diesem Kapitel werden die Vorgehensweisen und Verwendungen der Technologien beschrieben. Hierbei wird zuerst auf die Ladestation eingegangen, da dort die Funktionsweise der peripheren Geräte erklärt wird, die für die Implementierung der Server-Logik wichtig sind. Anschließend folgt der Server und zum Schluss die Steuercontroller.
 
 
-\section{Ladestation}
+\section{Das Tor}
+Das Tor vereint in sich drei Funktionalitäten. Die Infrarot-LED, die Torerkennung und die Ladestation. Es wurde unter Verwendung von 3D-Druck erstellt und konnte dadurch genau an die Anforderungen angepasst entworfen werden. 
 
+%TODO bild des Tors einfügen
 
 
 \subsection{Infrarot-LED}
@@ -13,6 +15,9 @@ In diesem Kapitel werden die Vorgehensweisen und Verwendungen der Technologien b
 Die Infrarot-LED dient dazu, dem Roboter die Richtung zu vermitteln, in der seine Ladestation, also sein Tor zu finden ist. Bei dieser Art der Kommunikation gibt es nur einen Sender und einen Empfänger. Die Infrarot-LED nimmt hierbei die Rolle des Senders ein und der Roboter die des Empfängers. 
 Um die Funktionalität der Kommunikation besser zu vermitteln, wird im Folgenden zunächst auf die technischen Grundlagen bei der IR-Kommunikation eingegangen.
 Der Infrarot Empfänger besteht aus einer Photodiode, einem bei einer gewissen Frequenz geregeltem Verstärker und einem Demodulator. Bei unserem Empfänger beträgt die Verstärkerfrequenz etwa 38 kHz. Nun ist es möglich, Signale mit der IR-LED zu erzeugen, die dann vom Empfänger verarbeitet werden. Hierbei beträgt die Trägerfrequenz des modulierten Signals genau die Frequenz, auf der der Verstärker des Empfängers arbeitet, also 38 kHz. Das Signal besteht aus zwei Werten, entweder aus der 0, also die IR-LED ist aus, oder aus einer logischen 1, indem die IR-LED mit diesen 38 kHz blinkt. Gemessen werden kann nun die Frequenz, die aus der Dauer der logischen 1 und der logischen 0 resultiert. 
+
+Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus verschieden lang an und ausschalten.
+%TODO evtl hier auch eine Schaltungsskizze dazu in Anahng. auch Mit Pinbelegung.
 
 %TODO abbildung von beispielburst. AUS OSZI!! Ist so vermutlich noch unklar. evtl hier auch mal jemand drüber lesen lassen der bisschen ahnung von e technik hat. vllt nico. nico is gut
 
@@ -27,7 +32,17 @@ Am oberen Endes Tores sind drei Infrarot-LEDs befestigt. Die äußeren beiden ha
 
 Um den Ladeprozess möglichst fehlerfrei zu starten ist es notwendig, dass der Roboter möglichst frontal auf die Ladestation zu fährt, deshalb hat die mittlere LED nur einen Abstrahlwinkel von 20\degree  (maximal 10\degree  Abweichung). Diese ist somit die LED, die signalisiert, dass der Roboter nun korrekt platziert ist und sich nur noch gerade aus auf die LED zu bewegen muss. Die anderen beiden LEDs dienen dem Zweck, den Roboter in genau diese Position zu bringen. Da die LEDs unterschiedlich moduliert sind, kann der Roboter erkennen in welchem Signal er sich nun befindet. Ist es die mittlere, fährt er gerade aus auf das Tor, ist es eine der äußeren, bewegt er sich weiter zur Mitte. (vgl. Abschnitt \ref{sec:torfindung})
 
+
+\subsection{Ladestation}
+Die Ladestation befindet sich am oberen Rand des Tors. Der Roboter verfügt auf der Rückseite (also auf der Seite, auf der auch der Infrarot-Empfänger platziert ist) über drei Ladekontakte. Auf gleicher Höhe sind am Tor Kontakte angebracht, die das Ladegerät darstellen. Auf diese Weise ist es möglich den Roboter zu laden, indem man ihn einfach gegen die Ladestation fährt.
+%TODO auch noch n bildchen
+
 \subsection{Torerkennung}
+Grundlage der Torerkennung ist die Überlegung, mit welcher Technologie ein Tor erkannt werden soll. Zur Auswahl standen hier mehrere Möglichkeiten. \\
+Möglichkeit 1 wäre gewesen das Tor mit einer Lichtschranke zu versehen. Möglichkeit 2 wäre die Entwicklung eines intelligenten Balls, der selbstständig erkennt ob er sich im Tor befindet und Möglichkeit 3 wäre die Konstruktion eines simplen Tasters, der durch den eintreffenden Ball betätigt wird.
+Möglichkeit 2 wurde schon zu Beginn verworfen, da der Ball selbst dadurch eine Komponente darstellen würde und deshalb nicht leicht austauschbar wäre. Man müsste ihn so konzipieren, dass er durch die auf ihn einwirkenden Kräfte nicht zerstört würde, da sobald er mal nicht mehr funktionsfähig wäre, man nicht mehr spielen könnte bis ein neuer Ball gefertigt wurde. \\
+Das Problem bei Möglichkeit 1 und 3 ist folgendes: Beide erkennen lediglich eine Bewegung im Tor, es kann aber nicht sichergestellt werden, ob die Bewegung tatsächlich von dem Ball aus geht. So ist es deshalb möglich, einfach mit dem Roboter an das Tor zu fahren und zu hoffen, dass der Roboter weit genug in das Tor hinein ragt. Die Entscheidung fiel schließlich auf die Variante mit dem mechanischen Taster. Im Gegensatz zu der Lichtschranke, ist dieser nicht anfällig gegen andere Lichteinwirkungen, die nur mit erheblichem Mehraufwand gefiltert werden könnten. \\
+Der mechanische Schalter ist eine simple "Klappenkonstruktion". Im Tor hängt eine Klappe, die vom Ball kurz nach hinten gedrückt wird. Dort schließt sie zwei Kontakte, die einen Interrupt beim RaspberryPi auslösen.
 
 \section{Server}
 \label{impl:server}

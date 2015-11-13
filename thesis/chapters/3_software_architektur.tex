@@ -7,7 +7,7 @@ Ausgehend von diesen Bedingungen, die die Architektur erfüllen muss, kamen folg
 
 Eine \textbf{Client-Server-Architektur} bei der ein Server zentral die Kommunikation verwaltet. Hierbei findet keine Kommunikation zwischen den Steuergeräten und den Robotern direkt statt. Die Torerkennung kommuniziert direkt mit dem Server, ohne dass Roboter und Controller zwangsweise etwas davon mitbekommen. Sowohl die Roboter, als auch die Controller nehmen die Rolle eines Clients ein. Dadurch ist es Möglich, dass eine Steuerung des Servers stattfinden kann, ohne dass ein Controller verbunden ist. Zusätzlich ist es in dieser Architektur möglich beliebig viele Clients anzubinden. Durch die Trennung von Client und Logik können die Controller beliebig erweitert und ausgetauscht werden, ohne die eigentliche Spiellogik zu ändern.
 
-\begin{figure}[ht]
+\begin{figure}[!h]
 	\includegraphics[scale=0.25]{images/client-server_architektur.pdf}
 	\caption{Client-Server Architektur}
 	\label{fig:client-server_architektur}
@@ -16,7 +16,7 @@ Eine \textbf{Client-Server-Architektur} bei der ein Server zentral die Kommunika
 
 Eine Architektur, die Roboter und Controller \textbf{paarweise} verbindet. Bei dieser Architektur wird jedem Roboter ein Controller zugewiesen, der genau diesen steuert. Die peripheren Geräte senden direkt an die Controller. Auch die gesamte Spiellogik ist in den Controller gekapselt. Ein Vorteil dieser Architektur ist die geringe Latenz bei der Befehlsübermittlung. Im Vergleich zur Client-Server-Architektur gibt es hier keinen dritten Knoten, über den die Übertragung abgehalten wird, wodurch sich die benötigte Zeit halbiert. Dies stellt für die Rechtzeitigkeit der Steuerung einen erheblichen Vorteil dar.
 
-\begin{figure}[ht]
+\begin{figure}[h!]
 	\includegraphics[scale=0.25]{images/paarweise_architektur.pdf}
 	\caption{Paarweise Architektur}
 	\label{fig:paarweise_architektur}
