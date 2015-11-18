@@ -2,7 +2,7 @@
 \label{ch:Grundlagen}
 
 
-UDP
+\section{UDP}
 
 Beim User Datagram Protocol handelt es sich um ein verbindungsloses und in jeglicher Hinsicht ungeschütztes Protokoll, das auf der Transportebene (Schicht 4 im OSI-Schichtenmodell) arbeitet. Es bestehen keinerlei Mechanismen, die das korrekte Übertragen von Paketen gewährleisten. Hierzu zählen:
 
@@ -24,12 +24,7 @@ Ein UDP Header besteht aus 8 Byte. Mit diesen 8 Byte werden lediglich Source-Por
 Aufgrund dieser Eigenschaften wird UDP in Bereichen eingesetzt, in denen es auf hohe Übertragungsgeschwindigkeit ankommt und eventuelle Paketverluste zu verkraften sind, bzw. von höheren Schichten aufgelöst werden.
 
 
-
-
-\newpage
-
-
-TCP
+\section{TCP}
 
 Beim Transmission Control Protocol handelt es sich um ein verbindungsorientiertes paketvermittelndes Protokoll. Mithilfe verschiedener Mechanismen wird sichergestellt, dass Pakete in der richtigen Reihenfolge ankommen, es zu keinen Staus kommt und dass Netzwerkknoten nicht überlaufen. Dadurch, dass das Protokoll verbindungsorientiert arbeitet, können beide Teilnehmer der Verbindung Daten ohne Anfragen senden. 
 
@@ -50,9 +45,7 @@ Die Verbindung wird über einen 3-Wege-Handshake hergestellt. Hierbei sendet ein
 Mithilfe von geordneten Sequenznummern und Acknowledgments werden alle empfangene Pakete bestätigt. Durch das Fehlen einer Sequenznummer erkennt der Empfänger den Verlust eines Pakets und teilt daraufhin dem Sender mit, dass es nicht angekommen ist. Für den Fall eines Verlusts des Acknowledgments, hat der Sender einen Timer, welcher nach einiger Zeit eine Retransmission des Pakets veranlasst, sofern kein Acknowledgment ankommen sollte.
 
 
-
-
-HTTP
+\section{HTTP}
 
 Das Hypertext Transfer Protocol ist ein zustandsloses Datenübertragungsprotokoll, das auf der Anwendungsschicht arbeitet. Am meisten wird das Protokoll für den Aufbau von Internetseiten verwendet, also von einem Webbrowser, jedoch ist das Aufgabenfeld nicht darauf beschränkt.
 
@@ -77,7 +70,7 @@ Die möglichen Befehle sind:
 
 
 
-WebSockets
+\section{WebSockets}
 
 Das WebSocket-Protokoll ist ein Netzwerkprotokoll, das auf TCP und HTTP basiert. In diesem Protokoll ist es möglich, eine bidirektionale Verbindung zwischen einer Webanwendung und einem WebSocket-Server herzustellen. Im Gegensatz zu reinem HTTP ist es hierbei möglich, dass der Server ohne einen vorhergehenden Request des Clients, Daten an den Client sendet. Lediglich den Verbindungsaufbau muss der Client initiieren. Dies wird realisiert, indem die TCP-Verbindung nach dem Verbindungsaufbau nicht sofort geschlossen wird. 
 Eine WebSocket URL wird über die beiden Schemata wss und ws definiert, was für verschlüsselte und unverschlüsselte Verbindungen steht.
@@ -86,10 +79,10 @@ Der Verbindungsaufbau funktioniert über einen Handshake, der wie in HTTP üblic
 
 
 
-Jetty Webserver
+\section{Jetty Webserver}
 
 Jetty ist eine Java-Implementierung eines Webservers. Durch seine geringe Größe ist es leicht, ihn in andere Software zu integrieren. Außerdem unterstützt Jetty die Möglichkeit WebSockets aufzubauen.
 
 
-Base64
+\section{Base64}
 Base64 ist ein Kodierungsverfahren, bei dem 8-Bit Binärdaten in eine rein aus lesbaren Zeichen bestehende Zeichenkette umgewandelt wird. Bei diesem verfahren steigt der benötigte Platzbedarf um 33-36 \%
