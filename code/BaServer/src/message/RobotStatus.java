@@ -9,6 +9,9 @@ public class RobotStatus {
 	private byte[] status = new byte[size];
 	private byte[] picture;
 		
+	public static final int SEE_LEFT = 2;
+	public static final int SEE_RIGHT = 3;
+	public static final int SEE_STRAIGHT = 1;
 	public RobotStatus(byte[] status) {
 		
 		ByteArrayInputStream is = new ByteArrayInputStream(status);
@@ -38,12 +41,20 @@ public class RobotStatus {
 		return status[1];
 	}
 	
-	public boolean seeStation() {
+	public int seeStation() {
 		
-		if (status[2] == (byte) 0x01)
-			return true;
-		else 
-			return false;
+		switch (status[2]) {
+		
+		case (byte) 0x01:
+			return 1;
+		case (byte) 0x02:
+			return 2;
+		case (byte) 0x03:
+			return 3;
+		case (byte) 0x00:
+			return 0;
+		}
+		return 0;
 	}
 	
 	public byte[] getPictureData() {
