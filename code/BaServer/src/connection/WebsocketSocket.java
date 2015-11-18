@@ -1,6 +1,7 @@
 package connection;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -20,12 +21,13 @@ public class WebsocketSocket extends WebSocketAdapter {
 	}
 
     @Override
-    public void onWebSocketConnect(Session sess)
-    {
+    public void onWebSocketConnect(Session sess) {
+    	
+    	
     	if (playerCount < 2) {  
 	        super.onWebSocketConnect(sess);
 	        System.out.println("Socket Connected: " + sess.getRemoteAddress());
-	        
+
 	        playerCount++;
 	        cm.registerController(this);
 	        
@@ -92,6 +94,15 @@ public class WebsocketSocket extends WebSocketAdapter {
 
 		try {
 			getRemote().sendString(message);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void send(byte[] data) {
+		ByteBuffer buffer = ByteBuffer.wrap(data);
+		try {
+			getRemote().sendBytes(buffer);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

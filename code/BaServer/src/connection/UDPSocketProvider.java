@@ -15,11 +15,11 @@ import com.google.common.collect.HashBiMap;
 public class UDPSocketProvider implements Runnable {
 
 	private final static int ROBOT_PORT = 44044;
-	private final static String IP_ROBOT1 = "134.60.155.83";
+	private final static String IP_ROBOT1 = "10.38.5.229";
 	private final static String IP_ROBOT2 = "134.60.145.165";
 	private final static String IP_DEBUG = "134.60.156.40";
 	
-	private final static int PACKETSIZE_INCOMING = 12;
+	private final static int PACKETSIZE_INCOMING = 2000;
 	
 	private DatagramSocket socket;
 	
@@ -42,6 +42,7 @@ public class UDPSocketProvider implements Runnable {
 	public void run() {
 
 		while (true) {
+			if (socket == null) continue;
 			byte[] data = new byte[PACKETSIZE_INCOMING];
 			DatagramPacket packet = new DatagramPacket(data, data.length);
 			try {
@@ -65,8 +66,8 @@ public class UDPSocketProvider implements Runnable {
 		for (int i = 0; i < robots.length; i++) {
 			if (who == robots[i]) {
 				SocketAddress addr = mapping.inverse().get(who);
-				DatagramPacket packet = new DatagramPacket(data, 0, data.length, addr);
 				try {
+					DatagramPacket packet = new DatagramPacket(data, 0, data.length, addr);
 					socket.send(packet);
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -106,21 +107,22 @@ public class UDPSocketProvider implements Runnable {
 	
 	private int getRobotNr(DatagramPacket packet) {
 		
-		try {
-			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT1))) 
-				return 1;
-			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
-				return 2;
-			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
-				return 1;
-			//debug
-			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
-				return 1;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-		return -1;
+		return 1;
+//		try {
+//			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT1))) 
+//				return 1;
+//			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
+//				return 2;
+//			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
+//				return 1;
+//			//debug
+//			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
+//				return 1;
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		return -1;
 	}
 	
 	

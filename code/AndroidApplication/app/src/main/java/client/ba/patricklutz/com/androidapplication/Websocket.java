@@ -1,6 +1,7 @@
 package client.ba.patricklutz.com.androidapplication;
 
 import android.util.Log;
+import android.widget.ImageView;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
@@ -20,7 +21,7 @@ public class Websocket extends WebSocketClient {
     static URI serverURI;
     static {
         try {
-            serverURI = new URI("ws://134.60.145.193:8080/control/");
+            serverURI = new URI("ws://192.168.178.28:8080/control/");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -66,7 +67,7 @@ public class Websocket extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-
+        connectionListener.onMessage(message);
     }
 
     @Override
