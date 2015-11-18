@@ -42,6 +42,7 @@ public class UDPSocketProvider implements Runnable {
 	public void run() {
 
 		while (true) {
+			if (socket == null) continue;
 			byte[] data = new byte[PACKETSIZE_INCOMING];
 			DatagramPacket packet = new DatagramPacket(data, data.length);
 			try {
