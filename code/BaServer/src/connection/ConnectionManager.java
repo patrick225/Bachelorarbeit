@@ -77,7 +77,7 @@ public class ConnectionManager {
 		checkForReadyPlayers();
 	}
 	
-	
+	// TODO, stop blink if connectin aborts
 	public void registerRobot(UDPConnectionHandler robot) {
 		//TODO
 		if (robot.equals(robot1Static)) {

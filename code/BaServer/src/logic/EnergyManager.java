@@ -14,9 +14,8 @@ public class EnergyManager {
 	// threshold on 15 %
 	private static final int POWER_THRESHOLD = 100;
 	
-	private static final int PULSELENGTH_GOAL1 = 10000;
-	private static final int PULSELENGTH_GOAL1_DEVIATION = 2000;
-	private static final int PULSELENGTH_GOAL2 = 5000;
+	private static final int PULSELENGTH_GOAL1 = 1;
+	private static final int PULSELENGTH_GOAL2 = 5;
 	
 	
 	private static final int FINDSTATE_SEESTRAIGHT = RobotStatus.SEE_STRAIGHT;
@@ -37,7 +36,7 @@ public class EnergyManager {
 	private BlinkTask blink, blinkLeft, blinkRight;
 	
 	
-	private int findState = 0;
+	private int findState = FINDSTATE_SEEREALLY;
 	
 	public EnergyManager (UDPConnectionHandler robot, int chargeStation) {
 		
@@ -131,7 +130,7 @@ public class EnergyManager {
 			} 
 			
 			// then drive forward
-			else if (seeTempCounter < 25){
+			else if (seeTempCounter < 10){
 				rc = new RobotCommand(false,  false,  -10,  -10);
 				seeTempCounter++;
 			} else {
@@ -148,7 +147,7 @@ public class EnergyManager {
 			if (seeTempCounter < 5) {
 				rc = new RobotCommand(false,  false,  -10, 10);
 				seeTempCounter++;
-			} else if (seeTempCounter < 25){
+			} else if (seeTempCounter < 10){
 				rc = new RobotCommand(false,  false,  -10,  -10);
 				seeTempCounter++;
 			} else {
@@ -183,9 +182,9 @@ public class EnergyManager {
 			if (seeTemp != 0 && seeTempCounter > 2) {
 				//drive straight, right or left
 				
+				findState = seeTemp;
 				seeTemp = 0;
 				seeTempCounter = 0;
-				findState = seeTemp;
 			}
 			
 			// seen nothing for more than 5 times
@@ -196,6 +195,7 @@ public class EnergyManager {
 			break;
 		}
 		
+		System.out.println("status: " + findState);
 		
 		robot.send(rc.getBytes());
 		
@@ -207,42 +207,41 @@ public class EnergyManager {
 		// No Blinktask existing, or one existing but not alive
 		if (blink == null) {
 			
-			blink = new BlinkTask(myPulslength);
+			blink = new BlinkTask(myPulslength, 1);
 			blink.start();
 		}
 		if (blinkLeft == null) {
 			
-			blinkLeft = new BlinkTask(myPulslength-PULSELENGTH_GOAL1_DEVIATION);
+			blinkLeft = new BlinkTask(myPulslength * 2, 4);
 			blinkLeft.start();
 		}
 		if (blinkRight == null) {
 			
-			blinkRight = new BlinkTask(myPulslength + PULSELENGTH_GOAL1_DEVIATION);
+			blinkRight = new BlinkTask(myPulslength * 3, 16);
 			blinkRight.start();
 		}
 	}
 	
-	private void stopBlink() {
+	public void stopBlink() {
 
-		if (blink != null) {
-			blink.stopBlink();
-			blink = null;
-		}
-		if (blinkRight != null) {
-			blinkRight.stopBlink();
-			blinkRight = null;
-		}
-		if (blinkLeft != null) {
-			blinkLeft.stopBlink();
-			blinkLeft = null;
-		}
+			if (blink != null) {
+				blink.stopBlink();
+				blink = null;
+			}
+			if (blinkRight != null) {
+				blinkRight.stopBlink();
+				blinkRight = null;
+			}
+			if (blinkLeft != null) {
+				blinkLeft.stopBlink();
+				blinkLeft = null;
+			}
 	}
 	
-	//TODO
 	private boolean isCharging(RobotStatus rs) {
 		
 		if (lastPower < rs.getAkku())
-			return true;
+		//	return true;
 		
 		lastPower = rs.getAkku();
 		return false;
@@ -250,14 +249,17 @@ public class EnergyManager {
 	
 	
 	
-	private class BlinkTask extends Thread {
+	public class BlinkTask extends Thread {
 
 		Process process;
 		int length;
+		int pin;
 		
-		public BlinkTask(int pulslength) {
+		public BlinkTask(int pulslength, int pin) {
 			length = pulslength;
+			this.pin = pin;
 		}
+		
 		
 		@Override
 		public void run() {
@@ -266,7 +268,7 @@ public class EnergyManager {
 			try {
 				
 				
-			    process = new ProcessBuilder("./blinkIR", String.valueOf(length)).start();
+			    process = new ProcessBuilder("./blinkIR", String.valueOf(length), String.valueOf(pin)).start();
 			    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 			    StringBuilder builder = new StringBuilder();
 			    String line = null;

@@ -65,7 +65,7 @@ public class RobotStatus {
 	public String toString() {
 		
 		return "Akku: " + status[1] + "\n"
-				+ "PulsL�nge: " + seeStation();
+				+ "PulsLänge: " + status[2];
 	}
 }
 	
