@@ -1,11 +1,41 @@
 \chapter{Anhang}
 \label{ch:anhang}
 
-\begin{figure}[h]
+%TODO werte rauskriegen und richtig eintragen
+\begin{figure}
+	\centering
+	\begin{subfigure}{\textwidth}
+		\includegraphics[height=.4\textheight]{images/ne555_astabile_kippstufe.pdf}
+		\caption{Schaltplan des Timerbausteins \cite{ELKO}}
+		\label{fig:schaltplan_ne555}
+	\end{subfigure}
+	\par\bigskip
+	\begin{subfigure}{.3\textwidth}
+		
+		\begin{tabular}{|c|c|}
+			\hline Bauteil & Wert \\ 
+			\hline R1 &  \\ 
+			\hline R2 &  \\ 
+			\hline C1 &  \\ 
+			\hline C2 &  \\ 
+			\hline 
+		\end{tabular} 
+	\caption{Wertetabelle für die Timerbauteile}
+	\label{fig:wertetabelle_ne555}
+	\end{subfigure}
+	
+	\begin{subfigure}{\textwidth}
+		\includegraphics[height=.4\textheight]{images/schaltung_ne555_led.pdf}
+		\caption{Gesamter Schaltplan der Infrarot-LEDs}
+		\label{fig:schaltplan_ne555_leds}
+	\end{subfigure}
+\end{figure}
+
+\begin{figure}
 	\includegraphics[page=1,width=\textwidth]{images/uml_software_all.pdf}
 
 \end{figure}
-\begin{figure}[h]
+\begin{figure}
 	\includegraphics[page=2,width=\textwidth]{images/uml_software_all.pdf}
 	
 	\caption{Klassendiagramm des Servers}
@@ -13,8 +43,9 @@
 \end{figure}
 
 
-\begin{figure}[h]
+\begin{figure}
 	\includegraphics[width=\textwidth]{images/uml_android_app.pdf}
 	\caption{Klassendiagramm der Android Anwendung}
 	\label{fig:android_uml}
 \end{figure}
+

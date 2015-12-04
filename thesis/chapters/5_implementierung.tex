@@ -16,8 +16,7 @@ Die Infrarot-LED dient dazu, dem Roboter die Richtung zu vermitteln, in der sein
 Um die Funktionalität der Kommunikation besser zu vermitteln, wird im Folgenden zunächst auf die technischen Grundlagen bei der IR-Kommunikation eingegangen.
 Der Infrarot Empfänger besteht aus einer Photodiode, einem bei einer gewissen Frequenz geregeltem Verstärker und einem Demodulator. Bei unserem Empfänger beträgt die Verstärkerfrequenz etwa 38 kHz. Nun ist es möglich, Signale mit der IR-LED zu erzeugen, die dann vom Empfänger verarbeitet werden. Hierbei beträgt die Trägerfrequenz des modulierten Signals genau die Frequenz, auf der der Verstärker des Empfängers arbeitet, also 38 kHz. Das Signal besteht aus zwei Werten, entweder aus der 0, also die IR-LED ist aus, oder aus einer logischen 1, indem die IR-LED mit diesen 38 kHz blinkt. Gemessen werden kann nun die Frequenz, die aus der Dauer der logischen 1 und der logischen 0 resultiert. 
 
-Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus verschieden lang an und ausschalten.
-%TODO evtl hier auch eine Schaltungsskizze dazu in Anahng. auch Mit Pinbelegung.
+Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus verschieden lang an und ausschalten. Der Schaltplan inklusive Bauteilwerte befindet sich im Anhang \ref{fig:schaltplan_ne555}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{images/ir_burst_with_zoom.pdf}
@@ -173,3 +172,7 @@ Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertik
 	\label{fig:android_rcremote}
 \end{figure}
 
+
+
+\section{RobotSimulator}
+Einige Komponenten im Code des Servers benötigen gewisse Informationen vom Roboter, wie zum Beispiel die Bildübertragung. Da die Roboter gleichzeitig entwickelt wurden und deswegen nicht rund um die Uhr zur Verfügung standen war es hilfreich einen Simulator zu entwickeln, der Befehle im exakt selben Format versendet. So wurde die gesamte Roboter-Server Kommunikation simuliert. Ein weiterer Vorteil dieser Methode, abgesehen von der ständigen Verfügbarkeit, lag an der klaren Abtrennung von auftretenden Problemen. Wurde der Simulator erst einmal richtig konfiguriert, war die Schnittstelle für beide Seiten definiert. Funktionierte hinterher im Test etwas bei der Kommunikation nicht, konnten lediglich die Pakete des Simulators mit denen des Roboters verglichen werden. Unterschieden sie sich, war der Fehler auf der Roboter Seite.
