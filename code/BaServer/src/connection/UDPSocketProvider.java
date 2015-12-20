@@ -107,22 +107,21 @@ public class UDPSocketProvider implements Runnable {
 	
 	private int getRobotNr(DatagramPacket packet) {
 		
-		return 1;
-//		try {
-//			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT1))) 
-//				return 1;
-//			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
-//				return 2;
-//			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
-//				return 1;
-//			//debug
-//			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
-//				return 1;
-//		} catch (UnknownHostException e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return -1;
+		try {
+			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT1))) 
+				return 1;
+			if (packet.getAddress().equals(InetAddress.getByName(IP_ROBOT2)))
+				return 2;
+			if (packet.getAddress().equals(InetAddress.getByName(IP_DEBUG)))
+				return 1;
+			//debug
+			if (packet.getAddress().equals(InetAddress.getByName("127.0.0.1")))
+				return 1;
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		
+		return -1;
 	}
 	
 	
