@@ -1,7 +1,8 @@
 \chapter{Implementierung}
 \label{ch:implementierung}
 
-In diesem Kapitel werden die Vorgehensweisen und Verwendungen der Technologien beschrieben. Hierbei wird zuerst auf die Ladestation eingegangen, da dort die Funktionsweise der peripheren Geräte erklärt wird, die für die Implementierung der Server-Logik wichtig sind. Anschließend folgt der Server und zum Schluss die Steuercontroller.
+In diesem Kapitel werden die Vorgehensweisen und Verwendungen der Technologien beschrieben. Hierbei wird zuerst auf die Ladestation eingegangen, da dort die Funktionsweise der peripheren Geräte erklärt wird, die für die Implementierung der Server-Logik wichtig sind. Anschließend folgt der Server und zum Schluss die Steuercontroller. \\
+Der Quellcode des Projekts ist unter der Referenz \cite{PROJEKT} zu finden.
 
 
 \section{Das Tor}
@@ -50,11 +51,12 @@ Der mechanische Schalter ist eine simple \glqq Klappenkonstruktion\grqq. Im Tor 
 Der Server hat die Aufgabe, die gesamte Kommunikation zwischen Controllern und Robotern zentral zu verwalten und zu koordinieren. Auch die Spiellogik und Interpretation der Steuerbefehle ist Aufgabe des Servers. Außerdem müssen die Eingabe und Ausgabe der Peripheriegeräte verwaltet, bzw. gesteuert werden. Diese Peripheriegeräte sind die Ladestation, die gefunden werden muss, die Torerkennung, die verarbeitet werden muss und die Infrarot-LED, mithilfe der die Ladestation gefunden werden kann. Die Bilddaten, die vom Roboter versendet werden, müssen hier zwischengespeichert werden und anschließend an die Controller weiter gegeben werden.
 
 Als Hostgerät für den Server wurde ein RaspberryPi ausgewählt. Dieser bietet volle Unterstützung für Java-Programme und bietet mit seinen GPIO-Pins eine optimale Basis für die Ansteuerung und Überwachung der Peripheriegeräte. 
-Als Programmiersprache wurde Java gewählt.
+Als Programmiersprache wurde Java gewählt.\\
+Grundlage für die Verbindungslogik ist die Annahme, dass die IP-Adressen der Roboter und des Servers fest vergeben werden und deshalb fest in den Code geschrieben werden können.
 
 
 \subsection{Verbindung}
-Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung \ref{fig:uml_verbindung} dargestellt sind. Verwaltet werden die Verbindungen in der Klasse \textit{ConnectionManager}, der die Verbindungen für die Spiellogik bereit stellt, sobald ein Controller-Roboter paar verbunden wurde. Für die Verbindungen der Controller gibt es \textit{WebsocketSocket}. Ein Objekt dieser Klasse dient als Schnittstelle der Kommunikation zwischen einem Controller und dem Server. Hierbei werden die Nachrichten im JSON-Format ausgetauscht, da dies eine Key-Value Kommunikation ermöglicht und für abstrakte Sprachen wie Javascript leichter zu verwenden ist als eine Byte-Orientierte Übertragung. Für die Verbindungen der Roboter gibt es \textit{UDPConnectionHandler}. Auch ein Objekt davon steht für genau eine Verbindung mit einem Roboter, jedoch werden die Befehle hier im Gegensatz zu den WebSockets Byte-Orientiert ausgetauscht. Um eine Verbindung mit einem Roboter herzustellen, wird in der Klasse \textit{UDPSocketProvider} auf Port 44044 auf eingehende Pakete gewartet und anschließend ein Socket zu diesem Endpunkt bereit gestellt. Auch die Authentifizierung wird in dieser Klasse abgehandelt. Zusätzlich gibt es für den \textit{UDPConnectionHandler} eine Hilfsklasse, die \textit{ConnectionControl}. In dieser wird festgelegt, wie lange die Verbindung als offen gekennzeichnet werden soll, obwohl kein Paket ankommt. Auf der Controllerseite wird eine solche Implementierung nicht benötigt, da der WebSocket auf HTTP und damit auf TCP basiert. Ein Verbindungsabbruch ist dort auch ohne Timeout erkennbar.
+Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung \ref{fig:uml_verbindung} dargestellt sind. Verwaltet werden die Verbindungen in der Klasse \textit{ConnectionManager}, der die Verbindungen für die Spiellogik bereit stellt, sobald ein Controller-Roboter paar verbunden wurde. Für die Verbindungen der Controller gibt es \textit{WebsocketSocket}. Ein Objekt dieser Klasse dient als Schnittstelle der Kommunikation zwischen einem Controller und dem Server. Hierbei werden die Nachrichten im JSON-Format ausgetauscht, da dies eine Key-Value Kommunikation ermöglicht und für abstrakte Sprachen wie Javascript leichter zu verwenden ist als eine Byte-Orientierte Übertragung. Für die Verbindungen der Roboter gibt es \textit{UDPConnectionHandler}. Auch ein Objekt davon steht für genau eine Verbindung mit einem Roboter, jedoch werden die Befehle hier im Gegensatz zu den WebSockets Byte-Orientiert ausgetauscht. Um eine Verbindung mit einem Roboter herzustellen, wird in der Klasse \textit{UDPSocketProvider} auf Port 44044 auf eingehende Pakete gewartet und anschließend ein Socket zu diesem Endpunkt bereit gestellt. Diese Klasse implementiert das \textit{Runnable} Interface und wird als eigener Thread gestartet \cite{PROJEKT}.  Auch die Authentifizierung wird in dieser Klasse abgehandelt, indem überprüft wird, ob die eingehenden Pakete einer der IP-Adressen der Roboter zugeordnet werden können. Da die Roboter statische IP-Adressen bekommen sollen ist diese Methode überhaupt möglich. Zusätzlich gibt es für den \textit{UDPConnectionHandler} eine Hilfsklasse, die \textit{ConnectionControl}. In dieser wird festgelegt, wie lange die Verbindung als offen gekennzeichnet werden soll, obwohl kein Paket ankommt. Auf der Controllerseite wird eine solche Implementierung nicht benötigt, da der WebSocket auf HTTP und damit auf TCP basiert. Ein Verbindungsabbruch ist dort auch ohne Timeout erkennbar.
 
 
 \begin{figure}[!h]
@@ -151,7 +153,7 @@ JSONUtil.jsonObjToBoolean(command.get("left"))) {
  
 
 \subsection{Bildübertragung}
-Wie in der Schnittstellenbeschreibung in Kapitel \ref{sec:schnittstelle} beschrieben, werden die Bilddaten vom Roboter an die Statusnachrichten angehängt. Hierbei kennzeichnen die Bytes FF D8 den Beginn eines neuen Frames. Diese Kombination tritt in JPEG-kodierten Bildern immer nur am Anfang des Bildes auf, wodurch es möglich ist, Bilddaten über mehrere Pakete zu verteilen. Diese Daten werden dann in der Player-Klasse gepuffert, bis das Bild vollständig ist. Anschließend wird es noch base64 kodiert und sofort an die Controller weiter gesendet und nicht mit den regelmäßigen Statusbefehlen, um keine unnötige Zeitverzögerung einzubauen. Die base64 Kodierung wurde im Gegensatz zur einfachen Byte-Orientierten übertragen bevorzugt, damit an mit den Controllern in einer höheren Datenabstraktionsebene kommuniziert werden kann. Das vereinfacht den Code vor allem in der Webanwendung, da diese in Javascript implementiert ist. Ein großer Nachteil dieser Kodierung ist der größere Speicherbedarf, der die Übertragung aufgrund höheren Traffics langsamer macht und dadurch zu Verzögerungen führt, die letztendlich im Verlust der Steuerbarkeit resultieren können. Nach ersten Tests ist die Bildrate vom Roboter jedoch so gering, dass diese wenigen Frames rechtzeitig übertragen werden können. Zusätzlich sind die Frames in einer Größenordnung, in der 33 \% Mehrbedarf noch zu keiner Netzwerküberlastung führen. Der Servercode für die Pufferung der Bilddaten des Roboters sieht folgendermaßen aus:
+Wie in der Schnittstellenbeschreibung in Kapitel \ref{sec:schnittstelle} beschrieben, werden die Bilddaten vom Roboter an die Statusnachrichten angehängt. Hierbei kennzeichnen die Bytes FF D8 den Beginn eines neuen Frames. Diese Kombination tritt in JPEG-kodierten Bildern immer nur am Anfang des Bildes auf, wodurch es möglich ist, Bilddaten über mehrere Pakete zu verteilen. Diese Daten werden in der \textit{Player}-Klasse gepuffert, bis das Bild vollständig ist. Anschließend wird es noch base64 kodiert und sofort an die Controller weiter gesendet und nicht mit den regelmäßigen Statusbefehlen, um keine unnötige Zeitverzögerung einzubauen. Die base64 Kodierung wurde im Gegensatz zur einfachen Byte-Orientierten übertragen bevorzugt, damit mit den Controllern in einer höheren Datenabstraktionsebene kommuniziert werden kann. Das vereinfacht den Code vor allem in der Webanwendung, da diese in Javascript implementiert ist. Ein großer Nachteil dieser Kodierung ist der größere Speicherbedarf, der die Übertragung aufgrund höheren Traffics langsamer macht und dadurch zu Verzögerungen führt, die letztendlich im Verlust der Steuerbarkeit resultieren können. Nach ersten Tests ist die Bildrate vom Roboter jedoch so gering, dass diese wenigen Frames rechtzeitig übertragen werden können. Zusätzlich sind die Frames in einer Größenordnung, in der 33 \% Mehrbedarf noch zu keiner Netzwerküberlastung führen.\\ Der Servercode für die Pufferung der Bilddaten des Roboters sieht folgendermaßen aus:
 
 \begin{lstlisting}
 private void handlePictureData(byte[] data) {
@@ -181,7 +183,7 @@ Mit der Torfindung ist der Vorgang gemeint, um die Ladestation, die im Tor integ
 	\label{fig:state_findgoal}
 \end{figure}
 
-Diese Methode hier gut geeignet, da mit jedem Roboter Status dieselbe Routine aufgerufen wird. Mithilfe der Zustände lässt sich hier gut auf die unterschiedlichen Anforderungen reagieren. Auf den gleichen Status vom Roboter muss unterschiedlich reagiert werden, je nachdem in welchem Zustand sich der Roboter befindet. Der Code hierzu befindet sich in der Klasse \textit{EnergyManager}\\
+Diese Methode hier gut geeignet, da mit jedem Roboter Status dieselbe Routine aufgerufen wird. Mithilfe der Zustände lässt sich hier gut auf die unterschiedlichen Anforderungen reagieren. Auf den gleichen Status vom Roboter muss unterschiedlich reagiert werden, je nachdem in welchem Zustand sich der Roboter befindet. Der Code hierzu befindet sich in der Klasse \textit{EnergyManager} \cite{PROJEKT}\\
 Der Nachteil bei dieser Implementierung ist natürlich die unsichere Verhaltensweise des Roboters, wenn er außerhalb der LED-Reichweite ist. Diese führt im Worst-Case zu einer kompletten Entladung des Akkus bis zur Bewegungsunfähigkeit, bevor die Station gefunden wurde. Da der Großteil des Spielfelds jedoch von den LEDs abgedeckt wird, ist dieser Fall unwahrscheinlich. Ein Vorteil dieser Methode im Gegensatz zu zum Beispiel einer Kamera basierten Positionsbestimmung ist die Unabhängigkeit des Spielfelds. Lediglich die LEDs müssen am Tor vorhanden sein, jedoch keine speziellen Konturen oder andere feste Muster, an denen der Roboter sich mithilfe der Kamera orientieren kann. Abgesehen davon ist die Torfindung mittels IR-LEDs vergleichsweise einfach zu realisieren.
 
 \begin{figure}[!h]
@@ -220,7 +222,7 @@ Die Klassen \textit{Websocket}, \textit{CommandManager} und \textit{ControlActiv
 \subsection{Differential Steuerung}
 \label{sec:differentialsteuerung}
 
-Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertikal ausgerichtete Slider, die jeweils für den linken oder den rechten Motor stehen. Bewegt man den Slider nach oben, beschleunigt der Roboter vorwärts, nach unten dementsprechend rückwärts. Wie oben bereits erwähnt, wird der Schuss über die Sensorik des Geräts ausgelöst. Mit dieser Steuerung sind die genauesten Bewegungen möglich, da man das volle Potenzial ausschöpfen kann. Im Gegensatz zu den anderen Steuerungen werden keine Befehle limitiert. Jedoch wird die Steuerung dadurch sehr schwierig und für Anfänger nur schwer benutzbar.
+Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertikal ausgerichtete Slider, die jeweils für den linken oder den rechten Motor stehen und einen Wertebereich von -100 - +100 abdecken. Bewegt man den Slider nach oben, beschleunigt der Roboter vorwärts, nach unten dementsprechend rückwärts. Wie oben bereits erwähnt, wird der Schuss über die Sensorik des Geräts ausgelöst. Mit dieser Steuerung sind die genauesten Bewegungen möglich, da man das volle Potenzial ausschöpfen kann. Im Gegensatz zu den anderen Steuerungen werden keine Befehle limitiert. Jedoch wird die Steuerung dadurch sehr schwierig und für Anfänger nur schwer benutzbar.
 
 \begin{figure}[h!]
 	\centering
@@ -231,7 +233,7 @@ Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertik
 
 \subsection{RC-Remote Steuerung}
 
-Ähnlich wie in der Differential Steuerung kommen auch hier Slider zum Einsatz. Der vertikale Slider steht hierbei für die Beschleunigung des Roboters und der horizontale für die Winkel, den der Roboter einschlägt, ähnlich wie man es von einer Fernbedienung von ferngesteuerten Spielzeugautos kennt. Auch hier wird der Schuss wieder über die Sensoren ausgelöst. Ein großer Vorteil gegenüber den Differential Steuerung ist die leichtere Bedienbarkeit. Da nicht mehr jeder Motor separat angesteuert werden muss ist es zum Beispiel sehr einfach, den Roboter einfach nur gerade aus zu steuern. Jedoch ist der maximale Winkel den man einschlagen kann begrenzt und auch die Möglichkeit sich auf der Stelle zu drehen fällt bei dieser Steuerung weg. Die Umsetzung erfolgt in der Serverlogik und ist in Abschnitt \ref{sec:rcremote_server} beschrieben.
+Ähnlich wie in der Differential Steuerung kommen auch hier Slider zum Einsatz. Der vertikale Slider steht hierbei für die Beschleunigung des Roboters und der horizontale für die Winkel, den der Roboter einschlägt, ähnlich wie man es von einer Fernbedienung von ferngesteuerten Spielzeugautos kennt. Auch hier wird der Schuss über die Sensoren ausgelöst. Der Beschleunigungsregler hat einen Wertebereich von -100 bis +100. Dadurch bildet er genau die Leistung ab, die jeder Motor annehmen soll (solange keine Richtung angegeben wird). Der Richtungsregler hat einen Wertebereich von -50 - +50, wobei der tatsächliche Intervall keine Rolle spielt, da der Winkel, der eingeschlagen wird relativ zum Gesamtintervall berechnet wird (siehe \ref{sec:rcremote_server}). Ein großer Vorteil gegenüber den Differential Steuerung ist die leichtere Bedienbarkeit. Da nicht mehr jeder Motor separat angesteuert werden muss ist es zum Beispiel sehr einfach, den Roboter nur gerade aus zu steuern. Jedoch ist der maximale Winkel den man einschlagen kann begrenzt und auch die Möglichkeit sich auf der Stelle zu drehen fällt bei dieser Steuerung weg. Die Umsetzung erfolgt in der Serverlogik und ist in Abschnitt \ref{sec:rcremote_server} beschrieben.
 
 
 \begin{figure}[h!]
@@ -245,6 +247,26 @@ Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertik
 
 \section{RobotSimulator}
 Einige Komponenten im Code des Servers benötigen gewisse Informationen vom Roboter, wie zum Beispiel die Bildübertragung. Da die Roboter gleichzeitig zur Steuerung entwickelt wurden und deswegen nicht rund um die Uhr zur Verfügung standen war es hilfreich einen Simulator zu entwickeln, der Befehle im exakt selben Format versendet. So wurde die gesamte Roboter-Server Kommunikation simuliert. Hierzu wurde ein Paket mit festen Werten erstellt, das genau wie der Roboter auch, alle 100ms per UDP an den Server gesendet wird.\\
-Um die Bilddatenpufferung des Servers testen zu können, wurden zwei Beispielbilder von der Festplatte in ein großes Byte-Array geladen. So war es möglich die Eigenschaft des Roboters zu simulieren, Bilddaten ohne Trennung, also keine separierten Bilder zu senden. \\
+Um die Bilddatenpufferung des Servers testen zu können, wurden zwei Beispielbilder von der Festplatte in ein großes Byte-Array geladen. So war es möglich die Eigenschaft des Roboters zu simulieren, Bilddaten ohne Trennung, also keine separierten Bilder zu senden (vgl. folgender Codeauszug). \\
+
+\begin{lstlisting}
+puffer = new byte[puffer1.length + puffer2.length];
+System.arraycopy(puffer1, 0, puffer, 0, puffer1.length);
+System.arraycopy(puffer2, 0, puffer, puffer1.length, puffer2.length);
+				.
+				.
+				.
+private static void fillBuffer() {
+	// puffer is byte[] with two pictures concatenated
+	// data is the packet to send
+	for (int i = 0; i < 1400; i++) {
+		data[i + 12] = puffer[pointer];
+		pointer++;
+		if (pointer == puffer.length) {
+			pointer = 0;
+		}
+	}
+}
+\end{lstlisting}
 
 Ein weiterer Vorteil dieser Methode, abgesehen von der ständigen Verfügbarkeit, lag an der klaren Abtrennung von auftretenden Problemen. Wurde der Simulator erst einmal richtig konfiguriert, war die Schnittstelle für beide Seiten definiert. Funktionierte hinterher im Test etwas bei der Kommunikation nicht, konnten lediglich die Pakete des Simulators mit denen des Roboters verglichen werden. Unterschieden sie sich, war der Fehler auf der Roboter Seite.

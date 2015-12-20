@@ -4,7 +4,8 @@
 In diesem Kapitel werden die verwendeten Technologien kurz erklärt und begründet, warum sie für diese Arbeit eine Bedeutung haben. Außerdem werden grundlegende Entscheidungen herbeigeführt, auf die sich die weitere Arbeit stützt.
 
 \section{Häufigkeit der Richtungsänderung}
-In Bezug auf die Rechtzeitigkeit der Steuerung ist es wichtig, dass für den Nutzer keine Verzögerungserscheinungen bei der Richtungsänderung des Roboters auftreten. Da der Mensch eine gewisse Latenz aufweist, um von der Analyse des Geschehens eine Handlung zu tätigen, hat die minimal notwendige Frequenz für Richtungsänderungen hier etwas Spielraum. Nach einigen Testläufen hat sich herausgestellt, dass eine Befehlsfrequenz von 10Hz ausreichend ist, um die Rechtzeitigkeit zu gewährleisten. Die maximale Verzögerung von der Initiierung bis zur Umsetzung der Richtungsänderung beträgt hierbei maximal 100ms. Auch die Statusnachrichten kommen in diesem Intervall, es sei denn, es werden noch Bilddaten angehängt. In diesem Fall sendet der Roboter ohne Pausen zwischen den Paketen, damit die Bilddaten möglichst verzögerungsfrei auf dem Steuergerät angezeigt werden können. 
+In Bezug auf die Rechtzeitigkeit der Steuerung ist es wichtig, dass für den Nutzer keine Verzögerungserscheinungen bei der Richtungsänderung des Roboters auftreten. Da der Mensch eine gewisse Latenz aufweist, um von der Analyse des Geschehens eine Handlung zu tätigen, hat die minimal notwendige Frequenz für Richtungsänderungen hier etwas Spielraum. \\
+Um eine ausreichende Frequenz zu finden wurden an dieser Stelle einige Testläufe mit verschiedenen Frequenzen durchgeführt. Wie erwartet war die Steuerung mit 1Hz sehr träge und unsensibel. Ein rasches ändern der Richtung oder Bremsen ist damit unmöglich. Um die Frequenz und damit den Traffic im Netzwerk möglichst gering zu halten wurde sie langsam erhöht. Ab einer Frequenz von 10Hz waren keine Verzögerungen vom Befehl zur Bewegung mehr festzustellen. Deshalb wurde die Befehlsfrequenz auf diese 10Hz gewählt. Die maximale Verzögerung von der Initiierung bis zur Umsetzung der Richtungsänderung beträgt hierbei 100ms. Auch die Statusnachrichten kommen in diesem Intervall, es sei denn, es werden noch Bilddaten angehängt. In diesem Fall sendet der Roboter ohne Pausen zwischen den Paketen, damit die Bilddaten möglichst verzögerungsfrei auf dem Steuergerät angezeigt werden können. 
 
 
 \section{Wahl der Endgeräte für die Steuercontroller}
@@ -16,12 +17,6 @@ Um ein breiteres Nutzerspektrum abzudecken soll zusätzlich eine Webanwendung en
 \section{UDP}
 Beim User Datagram Protocol handelt es sich um ein verbindungsloses und in jeglicher Hinsicht ungeschütztes Protokoll, das auf der Transportebene (Schicht 4 im OSI-Schichtenmodell) arbeitet. Es bestehen keinerlei Mechanismen, die das korrekte Übertragen von Paketen gewährleisten. 
 
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{images/UDP_header.pdf}
-\caption{UDP Header}
-\label{fig:udp_header}
-\end{figure}
-
 Ein UDP Header besteht aus 8 Byte. Mit diesen 8 Byte werden lediglich Source-Port, Destination-Port, Länge und die Checksumme übertragen. Dieser vergleichsweise kleine Header (vgl. TCP mit etwa 20 Byte), führt zu einem geringen Overhead während der Übertragung, auch bei kleinen Paketen. Nachdem ein Paket gesendet wurde erfolgt keine Bestätigung des Pakets vom Empfänger. Durch diesen Uni-Direktionalen Sendevorgang entsteht wenig Traffic im Netzwerk. Falls gewisse Sicherheitsmechanismen gewünscht sind, müssen diese in höheren Schichten implementiert werden. \\
 Aufgrund dieser Eigenschaften wird UDP in Bereichen eingesetzt, in denen es auf hohe Übertragungsgeschwindigkeit ankommt und eventuelle Paketverluste zu verkraften sind, bzw. von höheren Schichten aufgelöst werden.\\
 
@@ -31,21 +26,8 @@ Bei der Kommunikation mit dem Roboter kommt es hauptsächlich auf die Geschwindi
 \section{TCP}
 Beim Transmission Control Protocol handelt es sich um ein verbindungsorientiertes paketvermittelndes Protokoll. Mithilfe verschiedener Mechanismen wird sichergestellt, dass Pakete in der richtigen Reihenfolge ankommen, es zu keinen Staus kommt und dass Netzwerkknoten nicht überlaufen. Dadurch, dass das Protokoll verbindungsorientiert arbeitet, können beide Teilnehmer der Verbindung Daten ohne Anfragen senden. 
 
-\begin{figure}[h]
-	\centering
-	\includegraphics[height=0.5\textheight]{images/TCP_header.pdf}
-	\caption{TCP Header}
-	\label{fig:tcp_header}
-\end{figure}
-
 Durch den größeren Header und den größeren Traffic, der das Protokoll verursacht, wird TCP für Anwendungen verwendet, bei denen ein Paketverlust ausgeschlossen werden soll, dafür aber eine etwas höhere Latenz in Kauf genommen werden kann. 
 Die Verbindung wird über einen 3-Wege-Handshake hergestellt. Hierbei sendet ein Teilnehmer eine Anfrage (syn), diese wird bestätigt (syn ack) woraufhin die Bestätigung erneut bestätigt wird. In diesem dritten Schritt werden meist bereits die ersten Nutzdaten mitgesendet.
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.3\textheight]{images/TCP_3wayhandshake.pdf}
-	\caption{TCP 3-Wege-Handshake}
-	\label{fig:tcp_3wayhandshake}
-\end{figure}
 
 Mithilfe von geordneten Sequenznummern und Acknowledgments werden alle empfangene Pakete bestätigt. Durch das Fehlen einer Sequenznummer erkennt der Empfänger den Verlust eines Pakets und teilt daraufhin dem Sender mit, dass es nicht angekommen ist. Für den Fall eines Verlusts des Acknowledgments, hat der Sender einen Timer, welcher nach einiger Zeit eine Retransmission des Pakets veranlasst, sofern kein Acknowledgment ankommen sollte. \\
 
@@ -87,7 +69,7 @@ Jetty \cite{JETTY} ist eine Java-Implementierung eines Webservers. Durch seine g
 
 
 \section{Base64}
-Base64 ist ein Kodierungsverfahren, bei dem 8-Bit Binärdaten in eine rein aus lesbaren Zeichen bestehende Zeichenkette umgewandelt wird. Bei diesem verfahren steigt der benötigte Platzbedarf um 33-36 \%. Jedoch ist es für eine sehr Hardware-abstrahierte Programmiersprache wie Javascript ungeeignet auf Byte-Ebene zu kommunizieren. Mit der base64 Kodierung wird eine reine Zeichen basierte Übertragung mit den Steuergeräten möglich.
+Base64 ist ein Kodierungsverfahren, bei dem 8-Bit Binärdaten in eine rein aus lesbaren Zeichen bestehende Zeichenkette umgewandelt wird. Bei diesem verfahren steigt der benötigte Platzbedarf um 33-36 \%. Jedoch ist es für eine sehr Hardware-abstrahierte Programmiersprache wie Javascript, die bei der Webanwendung zur Anwendung kommt ungeeignet auf Byte-Ebene zu kommunizieren. Mit der base64 Kodierung wird eine reine Zeichen basierte Übertragung mit den Steuergeräten möglich.
 
 \section{Der Roboter}
 Wie schon erwähnt wurde der Roboter im Rahmen einer weiteren Bachelorarbeit erstellt. Hier soll nur kurz auf die für diese Arbeit wichtigen Aspekte des Roboters eingegangen werden. \\
