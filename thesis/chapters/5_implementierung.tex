@@ -6,7 +6,7 @@ Der Quellcode des Projekts ist unter der Referenz \cite{PROJEKT} zu finden.
 
 
 \section{Das Tor}
-Das Tor soll mehrere Funktionalitäten in sich vereinen. Da jeder Roboter einem Tor zugeordnet wird, soll der Roboter die Tore unterscheiden können. Nachdem er sie unterschieden hat soll der Server in der Lage sein den Roboter zu diesem Tor zu navigieren. Dadurch ist es nicht notwendig, dass der Nutzer selbst den Roboter zum Tor navigiert, wenn der Akku entladen ist, sondern der Roboter fährt ganz ohne Nutzerinteraktion zum Tor, auch wenn momentan kein Spieler verbunden ist. Zusätzlich soll ein Ball im Tor erkannt werden und dem Server mitgeteilt werden. Das Tor wurde unter Verwendung von 3D-Druck erstellt und konnte dadurch genau an die Anforderungen angepasst entworfen werden. Das verwendete Programm für die 3D-Zeichnung war Solid Edge \cite{SOLIDEDGE}.
+Das Tor soll mehrere Funktionalitäten in sich vereinen. Da jeder Roboter einem Tor zugeordnet wird, soll der Roboter die Tore unterscheiden können. Nachdem er sie unterschieden hat soll der Server in der Lage sein den Roboter zu diesem Tor zu navigieren. Dadurch ist es nicht notwendig, dass der Nutzer selbst den Roboter zum Tor navigiert, wenn der Akku entladen ist. Der Roboter fährt ganz ohne Nutzerinteraktion zum Tor, auch wenn momentan kein Spieler verbunden ist. Das Tor wurde unter Verwendung von 3D-Druck erstellt und konnte dadurch genau an die Anforderungen angepasst entworfen werden. Das verwendete Programm für die 3D-Zeichnung war Solid Edge \cite{SOLIDEDGE}.
 
 
 \subsection{Infrarot-LED}
@@ -15,7 +15,7 @@ Die Infrarot-LED dient dazu, dem Roboter die Richtung zu vermitteln, in der sein
 Um die Funktionalität der Kommunikation besser zu vermitteln, wird im Folgenden zunächst auf die technischen Grundlagen bei der IR-Kommunikation eingegangen.
 Der Infrarot Empfänger besteht aus einer Photodiode, einem bei einer gewissen Frequenz geregeltem Verstärker und einem Demodulator. Bei unserem Empfänger beträgt die Verstärkerfrequenz etwa 38 kHz. Nun ist es möglich, Signale mit der IR-LED zu erzeugen, die dann vom Empfänger verarbeitet werden. Hierbei beträgt die Trägerfrequenz des modulierten Signals genau die Frequenz, auf der der Verstärker des Empfängers arbeitet, also 38 kHz. Das Signal besteht aus zwei Werten, entweder aus der 0, also die IR-LED ist aus, oder aus einer logischen 1, indem die IR-LED mit diesen 38 kHz blinkt. Gemessen werden kann nun die Frequenz, die aus der Dauer der logischen 1 und der logischen 0 resultiert. 
 
-Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus verschieden lang an und ausschalten. Der Schaltplan inklusive Bauteilwerte befindet sich im Anhang \ref{fig:schaltplan_ne555}
+Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus unterschiedlich lang an und ausschalten. Der Schaltplan inklusive Bauteilwerte befindet sich im Anhang \ref{fig:schaltplan_ne555}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{images/ir_burst_with_zoom.pdf}
@@ -37,23 +37,17 @@ Um den Ladeprozess möglichst fehlerfrei zu starten ist es notwendig, dass der R
 
 
 \subsection{Ladestation}
-Die Ladestation befindet sich am oberen Rand des Tors. Der Roboter verfügt auf der Rückseite (also auf der Seite, auf der auch der Infrarot-Empfänger platziert ist) über drei Ladekontakte. Auf gleicher Höhe sind am Tor Kontakte angebracht, die das Ladegerät darstellen. Auf diese Weise ist es möglich den Roboter zu laden, indem man ihn einfach gegen die Ladestation fährt.
+Die Kontakte der Ladestation wurden mithilfe einfacher Kupferstreifen realisiert, die am Tor angebracht wurden. Diese sind direkt mit einem Ladegerät verbunden. (Näheres hierzu in Referenz \cite{ALEX})
 
 \subsection{Torerkennung}
-Für die Torerkennung waren mehrere Technologien denkbar. \\
-Möglichkeit 1 wäre gewesen das Tor mit einer Lichtschranke zu versehen. Möglichkeit 2 wäre die Entwicklung eines intelligenten Balls, der selbstständig erkennt ob er sich im Tor befindet und Möglichkeit 3 wäre die Konstruktion eines simplen Tasters, der durch den eintreffenden Ball betätigt wird.
+Für die Torerkennung waren mehrere Technologien denkbar. Möglichkeit 1 wäre gewesen das Tor mit einer Lichtschranke zu versehen. Möglichkeit 2 wäre die Entwicklung eines intelligenten Balls, der selbstständig erkennt ob er sich im Tor befindet und Möglichkeit 3 wäre die Konstruktion eines simplen Tasters, der durch den eintreffenden Ball betätigt wird.
 Möglichkeit 2 wurde schon zu Beginn verworfen, da der Ball selbst eine Komponente darstellen würde und deshalb nicht leicht austauschbar wäre und vor allem ebenfalls mit Strom versorgt werden müsste, was wieder eine Ladestation erfordert. Man müsste ihn so konzipieren, dass er durch die auf ihn einwirkenden Kräfte nicht zerstört würde, da sobald er mal nicht mehr funktionsfähig wäre, man nicht mehr spielen könnte bis ein neuer Ball gefertigt wurde. \\
 Das Problem bei Möglichkeit 1 und 3 ist folgendes: Beide erkennen lediglich eine Bewegung im Tor, es kann aber nicht sichergestellt werden, ob die Bewegung tatsächlich von dem Ball aus geht. So ist es deshalb möglich, einfach mit dem Roboter an das Tor zu fahren und zu hoffen, dass der Roboter weit genug in das Tor hinein ragt. Die Entscheidung fiel schließlich auf die Variante mit dem mechanischen Taster. Im Gegensatz zu der Lichtschranke, ist dieser nicht anfällig gegen andere Lichteinwirkungen, die nur mit erheblichem Mehraufwand gefiltert werden könnten. \\
-Der mechanische Schalter ist eine simple \glqq Klappenkonstruktion\grqq. Im Tor hängt eine Klappe, die vom Ball kurz nach hinten gedrückt wird. Dort schließt sie zwei Kontakte, die einen Interrupt beim RaspberryPi auslösen.
+Der mechanische Schalter ist eine simple \glqq Klappenkonstruktion\grqq. Im Tor befindet sich eine Messingstange an der eine Klappe hängt. An der Rückseite dieser Klappe befinden sich Kupferstreifen, die, sobald ein Ball die Klappe nach hinten drückt, eine Verbindung zwischen zwei Kontakten herstellen. Das bewirkt eine Zustandsänderung auf einem GPIO-Pin des RaspberryPi's, die vom Server erkannt wird.
 
 \section{Server}
 \label{impl:server}
 Der Server hat die Aufgabe, die gesamte Kommunikation zwischen Controllern und Robotern zentral zu verwalten und zu koordinieren. Auch die Spiellogik und Interpretation der Steuerbefehle ist Aufgabe des Servers. Außerdem müssen die Eingabe und Ausgabe der Peripheriegeräte verwaltet, bzw. gesteuert werden. Diese Peripheriegeräte sind die Ladestation, die gefunden werden muss, die Torerkennung, die verarbeitet werden muss und die Infrarot-LED, mithilfe der die Ladestation gefunden werden kann. Die Bilddaten, die vom Roboter versendet werden, müssen hier zwischengespeichert werden und anschließend an die Controller weiter gegeben werden.
-
-Als Hostgerät für den Server wurde ein RaspberryPi ausgewählt. Dieser bietet volle Unterstützung für Java-Programme und bietet mit seinen GPIO-Pins eine optimale Basis für die Ansteuerung und Überwachung der Peripheriegeräte. 
-Als Programmiersprache wurde Java gewählt.\\
-Grundlage für die Verbindungslogik ist die Annahme, dass die IP-Adressen der Roboter und des Servers fest vergeben werden und deshalb fest in den Code geschrieben werden können.
-
 
 \subsection{Verbindung}
 Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung \ref{fig:uml_verbindung} dargestellt sind. Verwaltet werden die Verbindungen in der Klasse \textit{ConnectionManager}, der die Verbindungen für die Spiellogik bereit stellt, sobald ein Controller-Roboter paar verbunden wurde. Für die Verbindungen der Controller gibt es \textit{WebsocketSocket}. Ein Objekt dieser Klasse dient als Schnittstelle der Kommunikation zwischen einem Controller und dem Server. Hierbei werden die Nachrichten im JSON-Format ausgetauscht, da dies eine Key-Value Kommunikation ermöglicht und für abstrakte Sprachen wie Javascript leichter zu verwenden ist als eine Byte-Orientierte Übertragung. Für die Verbindungen der Roboter gibt es \textit{UDPConnectionHandler}. Auch ein Objekt davon steht für genau eine Verbindung mit einem Roboter, jedoch werden die Befehle hier im Gegensatz zu den WebSockets Byte-Orientiert ausgetauscht. Um eine Verbindung mit einem Roboter herzustellen, wird in der Klasse \textit{UDPSocketProvider} auf Port 44044 auf eingehende Pakete gewartet und anschließend ein Socket zu diesem Endpunkt bereit gestellt. Diese Klasse implementiert das \textit{Runnable} Interface und wird als eigener Thread gestartet \cite{PROJEKT}.  Auch die Authentifizierung wird in dieser Klasse abgehandelt, indem überprüft wird, ob die eingehenden Pakete einer der IP-Adressen der Roboter zugeordnet werden können. Da die Roboter statische IP-Adressen bekommen sollen ist diese Methode überhaupt möglich. Zusätzlich gibt es für den \textit{UDPConnectionHandler} eine Hilfsklasse, die \textit{ConnectionControl}. In dieser wird festgelegt, wie lange die Verbindung als offen gekennzeichnet werden soll, obwohl kein Paket ankommt. Auf der Controllerseite wird eine solche Implementierung nicht benötigt, da der WebSocket auf HTTP und damit auf TCP basiert. Ein Verbindungsabbruch ist dort auch ohne Timeout erkennbar.
@@ -70,25 +64,23 @@ Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung
 \subsection{Steueralgorithmen}
 Da die verschiedenen Steuervarianten unterschiedliche Steuerparameter erzeugen ist es für jede einzelne davon notwendig, diese zu interpretieren und in eine Form zu bringen, die mit der Schnittstelle zum Roboter kompatibel ist. Auf diese wird in den nächsten Abschnitten genauer eingegangen. Das heißt, am Ende der Übersetzung müssen die Geschwindigkeiten der Motoren links und rechts und ob ein Schuss ausgelöst werden soll. Unabhängig der Steuervariante muss der Ausgangsbefehl anhand des vorherigen Befehls nachkorrigiert werden. Da die Motoren des Roboters eine im Vergleich zur Haftreibung der Räder hohe Beschleunigung aufweisen, müssen die Beschleunigungen begrenzt werden, um durchdrehende Räder und damit ein unkontrollierbares Verhalten der Steuerung zu vermeiden. 
 Dies wird realisiert, indem ein maximal möglicher folgender Motorwert anhand des vorhergehenden Motorwertes errechnet wird. Die Berechnungsformel ist relativ simpel, der neue Wert darf um maximal einen festen Wert x größer sein als der alte Wert. Das ist dadurch zu begründen, dass für die Überschreitung der Haftreibung der Räder lediglich die dort wirkende Kraft ausschlaggebend ist, die wiederum aus der Beschleunigung der Räder resultiert. Dieser Wert x wurde nach einigen Testversuchen auf 10 festgelegt. Für den Fall, das beide gewünschten Motorenwerte über dem errechneten erlaubten Maximum liegen, muss anschließend das Verhältnis von linkem zu rechtem Motor angepasst werden, da sonst beide werte gleichgestellt werden, auch wenn diese sich zuvor unterschieden hätten. 
-Zur Veranschaulichung dieser Korrektur folgt nun ein Beispiel:
+Zur Veranschaulichung dieser Korrektur ist in Tabelle \ref{tab:bsp_korrektur} ein Beispiel aufgeführt. Wie man sieht wünscht der Benutzer durch seine Eingabe einen leichten Bogen nach rechts zu fahren, jedoch würden nach der Maximalwertkorrektur beide Motoren gleich schnell bewegt werden. Erst nach der Anpassung des Verhältnisses fährt der Roboter tatsächlich den gewünschten Radius.
 
-Letzte Motorbefehle: \\
-	links: 50 \\
-	rechts: 50 
-	
-Neue Motorbefehle: \\
-	links: 80 \\
-	rechts: 70 
-	
-Neue Motorbefehle nach Korrektur (ohne Verhältnis nachzukorrigieren) \\
-	links: 60 \\
-	rechts: 60 
-	
-Wie man sieht wünscht der Benutzer durch seine Eingabe einen leichten Bogen nach rechts zu fahren, jedoch würden nach der Maximalwertkorrektur beide Motoren gleich schnell bewegt werden.
+\vspace{1cm}
 
-Nach Anpassung des Verhältnisses -- $\frac{links}{rechts} = \frac{8}{7}$ \\
-	links: 60 \\
-	rechts: $\frac{links}{\frac{8}{7}} = 52$
+\begin{table}[h!]
+	\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+		\hline
+		 & letzte Motorbefehle & neue Motorbefehle & nach Korrektur (ohne Verhältnis) & nach Korrektur (mit Verhältnis) \\ \hline
+		Motor Links      & 50      & 80      & 60      &
+		06  \\
+		Motor Rechts      & 50      & 70      & 60
+		& 52 \\ \hline
+	\end{tabularx}
+	\caption{Motor Werte nach Durchlaufen des Korrekturalgorithmus}
+	\label{tab:bsp_korrektur}
+\end{table}
+
 
 
 \subsubsection{Differential Steuerung}
@@ -120,6 +112,7 @@ if (ratioLR < 1) {
 \subsubsection{Webanwendung}
 \label{sec:webanwendung_server}
 Diese Steuervariante hat einen bedeutenden Nachteil. Da die Eingangsparameter die momentan gedrückten Tasten sind (siehe Abschnitt \ref{sec:webanwendung_anwendung}), gibt es keine Zwischenwerte für die Beschleunigung oder Richtung. Die Taste nach vorne bedeutet hierbei einen Motorschub für beide Seiten von 100\%. Für jede zusätzliche Richtungstaste, also links oder rechts, werden auf der dementsprechenden Seite 25\% abgezogen. Wird nur eine Richtungstaste ohne eine Beschleunigungstaste gedrückt, werden die Motoren auf -15\%/15\% bzw. 15\%/-15\% gesetzt, was einer Drehung auf der Stelle entspricht. Diese \glqq Alles oder Nichts\grqq Steuerung führt im Spiel zu einer nicht flüssigen, jedoch durch die Möglichkeit der Drehung auf der Stelle zu einer annehmbaren Steuerung. Nachfolgend ist der Code für diese Umrechnung dargestellt.
+
 \begin{lstlisting}
 if (JSONUtil.jsonObjToBoolean(command.get("up"))) {
 	motorLeft += 100;
