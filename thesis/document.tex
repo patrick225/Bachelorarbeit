@@ -32,7 +32,8 @@ Institut für Organisation und Management von Informationssystemen
 
 \publishers{%
 \textbf{Gutachter}\\
-Prof. Dr. Stefan Wesner\\
+Prof. Dr.-Ing. Stefan Wesner
+Prof. Dr. Dr.-Ing. Wolfgang Minker
 }
 
 % Fonts {{{
@@ -45,6 +46,7 @@ Prof. Dr. Stefan Wesner\\
 \usepackage{graphicx}
 \usepackage{amsmath, amsthm, amssymb}
 \usepackage{listings}
+\usepackage{color}
 \usepackage{multicol}
 \usepackage{booktabs}
 \usepackage{url}
@@ -58,7 +60,8 @@ Prof. Dr. Stefan Wesner\\
 % Bildunterschriften {{{
 \usepackage{caption}   % Sans-Serif Font fuer Bildunterschriften
 \captionsetup{labelfont={sf,bf},font=sf}
-\usepackage[sf,bf,SF]{subfigure}
+%\usepackage[sf,bf,SF]{subfigure}
+\usepackage{subcaption}
 % }}}
 
 % Bilder {{{
@@ -193,10 +196,10 @@ This work is licensed under the Creative Commons Attribution-NonCommercial-Share
 \input{chapters/2_grundlagen}
 % ...
 
-\input{chapters/3_software_architektur}
+\input{chapters/4_kommunikation}
 % ...
 
-\input{chapters/4_kommunikation}
+\input{chapters/3_software_architektur}
 % ...
 
 \input{chapters/5_implementierung}
@@ -208,15 +211,12 @@ This work is licensed under the Creative Commons Attribution-NonCommercial-Share
 \input{chapters/7_anhang}
 % ...
 
-\input{chapters/8_literaturverzeichnis}
-% ...
-
 
 \backmatter %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \null\cleardoublepage
 
-%\cite{*}
+\nocite{*}
 %\bibliographystyle{dinat} %first referenced
 \bibliography{../literature/references.bib}
 
