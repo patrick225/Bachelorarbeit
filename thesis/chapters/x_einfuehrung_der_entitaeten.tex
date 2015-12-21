@@ -11,7 +11,7 @@ An dieser Stelle wird die Entscheidung aus Kapitel \ref{ch:software-architektur}
 Der Server ist ein Java-Programm, das die zentrale Kommunikationsstelle darstellt. Er trennt die Controller von der Logik und von der direkten Kommunikation mit den Robotern. Dieses Programm wird auf einem RaspberryPi ausgeführt, der sich mit einer festen IP-Adresse im Universitätsnetz befindet. Über die GPIO-Pins des RaspberryPi's sind die Unterkomponenten des Tors angeschlossen.
 
 \section{Tor}
-Das Tor ist ein mithilfe von 3D-Druck erstelltes Gehäuse, das die IR-LED, die Ladestation und die Torerkennung vereint. Pro Roboter wird ein Tor aufgestellt, das genau diesem Roboter zugeordnet ist.
+Das Tor soll mehrere Funktionalitäten in sich vereinen. Da jeder Roboter einem Tor zugeordnet wird, soll der Roboter die Tore unterscheiden können. Nachdem er sie unterschieden hat soll der Server in der Lage sein den Roboter zu diesem Tor zu navigieren. Dadurch ist es nicht notwendig, dass der Nutzer selbst den Roboter zum Tor navigiert, wenn der Akku entladen ist. Der Roboter fährt ganz ohne Nutzerinteraktion zum Tor, auch wenn momentan kein Spieler verbunden ist. Das Tor wurde unter Verwendung von 3D-Druck erstellt und konnte dadurch den Anforderungen entsprechend entworfen werden. Das verwendete Programm für die 3D-Zeichnung war Solid Edge \cite{SOLIDEDGE}.
 
 \subsection{Ladestation}
 Mit der Ladestation sind die Ladekontakte gemeint, die am Tor befestigt sind. Sie befinden sich auf Höhe der Ladekontakte des Roboters, um ein Laden des Roboters zu ermöglichen, nur indem er gegen die Kontakte des Tors fährt.
@@ -23,4 +23,4 @@ Die Infrarot-LED (IR-LED) ist die Komponente, die notwendig ist, um dem Roboter 
 Die Torerkennung ist der mechanische Schalter, der ein Signal an den Server weiterleitet sobald ein Tor erzielt wurde. 
 
 \section{Steuercontroller}
-Unter einem Steuercontroller verstehen wir das Gerät, das der Nutzer verwendet um den Roboter zu steuern. Das kann entweder ein Android-Gerät sein, auf dem die Android-Anwendung ausgeführt wird oder die Webanwendung mithilfe eines Laptops oder PCs. 
+Ein Steuercontroller bezeichnet im Folgenden das Gerät, das der Nutzer verwendet um den Roboter zu steuern. Das kann entweder ein Android-Gerät sein, auf dem die Android-Anwendung ausgeführt wird oder die Webanwendung mithilfe eines Laptops oder PCs. Die Android-Anwendung funktioniert auf allen Geräten, auf denen mindestens Android API 14 installiert ist.
