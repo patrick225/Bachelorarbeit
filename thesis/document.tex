@@ -52,6 +52,7 @@ Prof. Dr. Dr.-Ing. Wolfgang Minker
 \usepackage{url}
 \usepackage{ccicons}
 \usepackage{gensymb}
+\usepackage{tabularx}
 
 \usepackage{natbib}
 \setcitestyle{square,numbers,comma,sort}
@@ -151,7 +152,8 @@ OMI-2015-12-31\\[4em]
 {\large \bfseries Vorgelegt von:}\\                     
 \theauthor \\[2em]
 {\large \bfseries Gutachter:}\\                     
-Prof. Dr. Stefan Wesner\\
+Prof. Dr.-Ing. Stefan Wesner\\
+Prof. Dr. Dr.-Ing. Wolfgang Minker\\
 \\[2em]
 {\large \bfseries Betreuer:}\\ 
 Dipl.-Inf. Lutz Schubert\\
@@ -179,6 +181,7 @@ This work is licensed under the Creative Commons Attribution-NonCommercial-Share
 
 
 \pagestyle{scrheadings}
+\lstset{language=Java}
 
 \clearscrheadfoot
 \ohead{\headmark}
@@ -194,6 +197,9 @@ This work is licensed under the Creative Commons Attribution-NonCommercial-Share
 % ...
 
 \input{chapters/2_grundlagen}
+% ...
+
+\input{chapters/x_einfuehrung_der_entitaeten}
 % ...
 
 \input{chapters/4_kommunikation}
@@ -217,7 +223,7 @@ This work is licensed under the Creative Commons Attribution-NonCommercial-Share
 \null\cleardoublepage
 
 \nocite{*}
-%\bibliographystyle{dinat} %first referenced
+\bibliographystyle{dinat} %first referenced
 \bibliography{../literature/references.bib}
 
 \cleardoublepage

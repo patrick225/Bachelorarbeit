@@ -6,7 +6,7 @@ Der Quellcode des Projekts ist unter der Referenz \cite{PROJEKT} zu finden.
 
 
 \section{Das Tor}
-Das Tor soll mehrere Funktionalitäten in sich vereinen. Da jeder Roboter einem Tor zugeordnet wird, soll der Roboter die Tore unterscheiden können. Nachdem er sie unterschieden hat soll der Server in der Lage sein den Roboter zu diesem Tor zu navigieren. Dadurch ist es nicht notwendig, dass der Nutzer selbst den Roboter zum Tor navigiert, wenn der Akku entladen ist, sondern der Roboter fährt ganz ohne Nutzerinteraktion zum Tor, auch wenn momentan kein Spieler verbunden ist. Zusätzlich soll ein Ball im Tor erkannt werden und dem Server mitgeteilt werden. Das Tor wurde unter Verwendung von 3D-Druck erstellt und konnte dadurch genau an die Anforderungen angepasst entworfen werden. Das verwendete Programm für die 3D-Zeichnung war Solid Edge \cite{SOLIDEDGE}.
+Das Tor an sich beinhaltet keine Funktionalität, außer ein Ziel für die Spieler darzustellen. Die eigentlichen Funktionen befinden sich in den folgenden Komponenten, die in das Tor integriert wurden.
 
 
 \subsection{Infrarot-LED}
@@ -15,7 +15,7 @@ Die Infrarot-LED dient dazu, dem Roboter die Richtung zu vermitteln, in der sein
 Um die Funktionalität der Kommunikation besser zu vermitteln, wird im Folgenden zunächst auf die technischen Grundlagen bei der IR-Kommunikation eingegangen.
 Der Infrarot Empfänger besteht aus einer Photodiode, einem bei einer gewissen Frequenz geregeltem Verstärker und einem Demodulator. Bei unserem Empfänger beträgt die Verstärkerfrequenz etwa 38 kHz. Nun ist es möglich, Signale mit der IR-LED zu erzeugen, die dann vom Empfänger verarbeitet werden. Hierbei beträgt die Trägerfrequenz des modulierten Signals genau die Frequenz, auf der der Verstärker des Empfängers arbeitet, also 38 kHz. Das Signal besteht aus zwei Werten, entweder aus der 0, also die IR-LED ist aus, oder aus einer logischen 1, indem die IR-LED mit diesen 38 kHz blinkt. Gemessen werden kann nun die Frequenz, die aus der Dauer der logischen 1 und der logischen 0 resultiert. 
 
-Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus verschieden lang an und ausschalten. Der Schaltplan inklusive Bauteilwerte befindet sich im Anhang \ref{fig:schaltplan_ne555}
+Realisiert wurde diese Frequenz mit dem Timerbaustein NE555, an den die drei LEDs parallel zueinander geschaltet sind. Diese lassen sich mithilfe von Transistoren vom RaspberryPi aus unterschiedlich lang an und ausschalten. Der Schaltplan inklusive Bauteilwerte befindet sich im Anhang \ref{fig:schaltplan_ne555}
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{images/ir_burst_with_zoom.pdf}
@@ -37,26 +37,20 @@ Um den Ladeprozess möglichst fehlerfrei zu starten ist es notwendig, dass der R
 
 
 \subsection{Ladestation}
-Die Ladestation befindet sich am oberen Rand des Tors. Der Roboter verfügt auf der Rückseite (also auf der Seite, auf der auch der Infrarot-Empfänger platziert ist) über drei Ladekontakte. Auf gleicher Höhe sind am Tor Kontakte angebracht, die das Ladegerät darstellen. Auf diese Weise ist es möglich den Roboter zu laden, indem man ihn einfach gegen die Ladestation fährt.
+Die Kontakte der Ladestation wurden mithilfe einfacher Kupferstreifen realisiert, die am Tor angebracht wurden. Diese sind direkt mit einem Ladegerät verbunden. (Näheres hierzu in Referenz \cite{ALEX})
 
 \subsection{Torerkennung}
-Für die Torerkennung waren mehrere Technologien denkbar. \\
-Möglichkeit 1 wäre gewesen das Tor mit einer Lichtschranke zu versehen. Möglichkeit 2 wäre die Entwicklung eines intelligenten Balls, der selbstständig erkennt ob er sich im Tor befindet und Möglichkeit 3 wäre die Konstruktion eines simplen Tasters, der durch den eintreffenden Ball betätigt wird.
+Für die Torerkennung waren mehrere Technologien denkbar. Möglichkeit 1 wäre gewesen das Tor mit einer Lichtschranke zu versehen. Möglichkeit 2 wäre die Entwicklung eines intelligenten Balls, der selbstständig erkennt ob er sich im Tor befindet und Möglichkeit 3 wäre die Konstruktion eines simplen Tasters, der durch den eintreffenden Ball betätigt wird.
 Möglichkeit 2 wurde schon zu Beginn verworfen, da der Ball selbst eine Komponente darstellen würde und deshalb nicht leicht austauschbar wäre und vor allem ebenfalls mit Strom versorgt werden müsste, was wieder eine Ladestation erfordert. Man müsste ihn so konzipieren, dass er durch die auf ihn einwirkenden Kräfte nicht zerstört würde, da sobald er mal nicht mehr funktionsfähig wäre, man nicht mehr spielen könnte bis ein neuer Ball gefertigt wurde. \\
 Das Problem bei Möglichkeit 1 und 3 ist folgendes: Beide erkennen lediglich eine Bewegung im Tor, es kann aber nicht sichergestellt werden, ob die Bewegung tatsächlich von dem Ball aus geht. So ist es deshalb möglich, einfach mit dem Roboter an das Tor zu fahren und zu hoffen, dass der Roboter weit genug in das Tor hinein ragt. Die Entscheidung fiel schließlich auf die Variante mit dem mechanischen Taster. Im Gegensatz zu der Lichtschranke, ist dieser nicht anfällig gegen andere Lichteinwirkungen, die nur mit erheblichem Mehraufwand gefiltert werden könnten. \\
-Der mechanische Schalter ist eine simple \glqq Klappenkonstruktion\grqq. Im Tor hängt eine Klappe, die vom Ball kurz nach hinten gedrückt wird. Dort schließt sie zwei Kontakte, die einen Interrupt beim RaspberryPi auslösen.
+Der mechanische Schalter ist eine simple \glqq Klappenkonstruktion\grqq. Im Tor befindet sich eine Messingstange an der eine Klappe hängt. An der Rückseite dieser Klappe befinden sich Kupferstreifen, die, sobald ein Ball die Klappe nach hinten drückt, eine Verbindung zwischen zwei Kontakten herstellen. Das bewirkt eine Zustandsänderung auf einem GPIO-Pin des RaspberryPi's, die vom Server erkannt wird.
 
 \section{Server}
 \label{impl:server}
 Der Server hat die Aufgabe, die gesamte Kommunikation zwischen Controllern und Robotern zentral zu verwalten und zu koordinieren. Auch die Spiellogik und Interpretation der Steuerbefehle ist Aufgabe des Servers. Außerdem müssen die Eingabe und Ausgabe der Peripheriegeräte verwaltet, bzw. gesteuert werden. Diese Peripheriegeräte sind die Ladestation, die gefunden werden muss, die Torerkennung, die verarbeitet werden muss und die Infrarot-LED, mithilfe der die Ladestation gefunden werden kann. Die Bilddaten, die vom Roboter versendet werden, müssen hier zwischengespeichert werden und anschließend an die Controller weiter gegeben werden.
 
-Als Hostgerät für den Server wurde ein RaspberryPi ausgewählt. Dieser bietet volle Unterstützung für Java-Programme und bietet mit seinen GPIO-Pins eine optimale Basis für die Ansteuerung und Überwachung der Peripheriegeräte. 
-Als Programmiersprache wurde Java gewählt.\\
-Grundlage für die Verbindungslogik ist die Annahme, dass die IP-Adressen der Roboter und des Servers fest vergeben werden und deshalb fest in den Code geschrieben werden können.
-
-
 \subsection{Verbindung}
-Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung \ref{fig:uml_verbindung} dargestellt sind. Verwaltet werden die Verbindungen in der Klasse \textit{ConnectionManager}, der die Verbindungen für die Spiellogik bereit stellt, sobald ein Controller-Roboter paar verbunden wurde. Für die Verbindungen der Controller gibt es \textit{WebsocketSocket}. Ein Objekt dieser Klasse dient als Schnittstelle der Kommunikation zwischen einem Controller und dem Server. Hierbei werden die Nachrichten im JSON-Format ausgetauscht, da dies eine Key-Value Kommunikation ermöglicht und für abstrakte Sprachen wie Javascript leichter zu verwenden ist als eine Byte-Orientierte Übertragung. Für die Verbindungen der Roboter gibt es \textit{UDPConnectionHandler}. Auch ein Objekt davon steht für genau eine Verbindung mit einem Roboter, jedoch werden die Befehle hier im Gegensatz zu den WebSockets Byte-Orientiert ausgetauscht. Um eine Verbindung mit einem Roboter herzustellen, wird in der Klasse \textit{UDPSocketProvider} auf Port 44044 auf eingehende Pakete gewartet und anschließend ein Socket zu diesem Endpunkt bereit gestellt. Diese Klasse implementiert das \textit{Runnable} Interface und wird als eigener Thread gestartet \cite{PROJEKT}.  Auch die Authentifizierung wird in dieser Klasse abgehandelt, indem überprüft wird, ob die eingehenden Pakete einer der IP-Adressen der Roboter zugeordnet werden können. Da die Roboter statische IP-Adressen bekommen sollen ist diese Methode überhaupt möglich. Zusätzlich gibt es für den \textit{UDPConnectionHandler} eine Hilfsklasse, die \textit{ConnectionControl}. In dieser wird festgelegt, wie lange die Verbindung als offen gekennzeichnet werden soll, obwohl kein Paket ankommt. Auf der Controllerseite wird eine solche Implementierung nicht benötigt, da der WebSocket auf HTTP und damit auf TCP basiert. Ein Verbindungsabbruch ist dort auch ohne Timeout erkennbar.
+Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung \ref{fig:uml_verbindung} dargestellt sind. Verwaltet werden die Verbindungen in der Klasse \textit{ConnectionManager}, der die Verbindungen für die Spiellogik bereit stellt, sobald ein Controller-Roboter paar verbunden wurde. Für die Verbindungen der Controller gibt es \textit{WebsocketSocket}. Ein Objekt dieser Klasse dient als Schnittstelle der Kommunikation zwischen einem Controller und dem Server. Hierbei werden die Nachrichten im JSON-Format ausgetauscht, da dies eine Key-Value Kommunikation ermöglicht und für abstrakte Sprachen wie Javascript leichter zu verwenden ist als eine Byte-Orientierte Übertragung. Aufgerufen wird die Schnittstelle über die URL: \url{ws://ip\_des\_servers:8080/control/}. Für die Verbindungen der Roboter gibt es \textit{UDPConnectionHandler}. Auch ein Objekt davon steht für genau eine Verbindung mit einem Roboter, jedoch werden die Befehle hier im Gegensatz zu den WebSockets Byte-Orientiert ausgetauscht. Um eine Verbindung mit einem Roboter herzustellen, wird in der Klasse \textit{UDPSocketProvider} auf Port 44044 auf eingehende Pakete gewartet und anschließend ein Socket zu diesem Endpunkt bereit gestellt. Diese Klasse implementiert das \textit{Runnable} Interface und wird als eigener Thread gestartet \cite{PROJEKT}.  Auch die Authentifizierung wird in dieser Klasse abgehandelt, indem überprüft wird, ob die eingehenden Pakete einer der IP-Adressen der Roboter zugeordnet werden können. Da die Roboter statische IP-Adressen bekommen sollen ist diese Methode überhaupt möglich. Zusätzlich gibt es für den \textit{UDPConnectionHandler} eine Hilfsklasse, die \textit{ConnectionControl}. In dieser wird festgelegt, wie lange die Verbindung als offen gekennzeichnet werden soll, obwohl kein Paket ankommt. Auf der Controllerseite wird eine solche Implementierung nicht benötigt, da der WebSocket auf HTTP und damit auf TCP basiert. Ein Verbindungsabbruch ist dort auch ohne Timeout erkennbar.
 
 
 \begin{figure}[!h]
@@ -70,25 +64,23 @@ Die Verbindungslogik besteht im Wesentlichen aus fünf Klassen, die in Abbildung
 \subsection{Steueralgorithmen}
 Da die verschiedenen Steuervarianten unterschiedliche Steuerparameter erzeugen ist es für jede einzelne davon notwendig, diese zu interpretieren und in eine Form zu bringen, die mit der Schnittstelle zum Roboter kompatibel ist. Auf diese wird in den nächsten Abschnitten genauer eingegangen. Das heißt, am Ende der Übersetzung müssen die Geschwindigkeiten der Motoren links und rechts und ob ein Schuss ausgelöst werden soll. Unabhängig der Steuervariante muss der Ausgangsbefehl anhand des vorherigen Befehls nachkorrigiert werden. Da die Motoren des Roboters eine im Vergleich zur Haftreibung der Räder hohe Beschleunigung aufweisen, müssen die Beschleunigungen begrenzt werden, um durchdrehende Räder und damit ein unkontrollierbares Verhalten der Steuerung zu vermeiden. 
 Dies wird realisiert, indem ein maximal möglicher folgender Motorwert anhand des vorhergehenden Motorwertes errechnet wird. Die Berechnungsformel ist relativ simpel, der neue Wert darf um maximal einen festen Wert x größer sein als der alte Wert. Das ist dadurch zu begründen, dass für die Überschreitung der Haftreibung der Räder lediglich die dort wirkende Kraft ausschlaggebend ist, die wiederum aus der Beschleunigung der Räder resultiert. Dieser Wert x wurde nach einigen Testversuchen auf 10 festgelegt. Für den Fall, das beide gewünschten Motorenwerte über dem errechneten erlaubten Maximum liegen, muss anschließend das Verhältnis von linkem zu rechtem Motor angepasst werden, da sonst beide werte gleichgestellt werden, auch wenn diese sich zuvor unterschieden hätten. 
-Zur Veranschaulichung dieser Korrektur folgt nun ein Beispiel:
+Zur Veranschaulichung dieser Korrektur ist in Tabelle \ref{tab:bsp_korrektur} ein Beispiel aufgeführt. Wie man sieht wünscht der Benutzer durch seine Eingabe einen leichten Bogen nach rechts zu fahren, jedoch würden nach der Maximalwertkorrektur beide Motoren gleich schnell bewegt werden. Erst nach der Anpassung des Verhältnisses fährt der Roboter tatsächlich den gewünschten Radius.
 
-Letzte Motorbefehle: \\
-	links: 50 \\
-	rechts: 50 
-	
-Neue Motorbefehle: \\
-	links: 80 \\
-	rechts: 70 
-	
-Neue Motorbefehle nach Korrektur (ohne Verhältnis nachzukorrigieren) \\
-	links: 60 \\
-	rechts: 60 
-	
-Wie man sieht wünscht der Benutzer durch seine Eingabe einen leichten Bogen nach rechts zu fahren, jedoch würden nach der Maximalwertkorrektur beide Motoren gleich schnell bewegt werden.
+\vspace{1cm}
 
-Nach Anpassung des Verhältnisses -- $\frac{links}{rechts} = \frac{8}{7}$ \\
-	links: 60 \\
-	rechts: $\frac{links}{\frac{8}{7}} = 52$
+\begin{table}[h!]
+	\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+		\hline
+		 & letzte Motorbefehle & neue Motorbefehle & nach Korrektur (ohne Verhältnis) & nach Korrektur (mit Verhältnis) \\ \hline
+		Motor Links      & 50      & 80      & 60      &
+		06  \\
+		Motor Rechts      & 50      & 70      & 60
+		& 52 \\ \hline
+	\end{tabularx}
+	\caption{Motor Werte nach Durchlaufen des Korrekturalgorithmus}
+	\label{tab:bsp_korrektur}
+\end{table}
+
 
 
 \subsubsection{Differential Steuerung}
@@ -100,9 +92,9 @@ Die eingehenden Steuerparameter sind der Vorschub und die Richtung. Der Vorschub
 Im Allgemeinen lautet diese: 
 {\Large \[ratio_{LR} = a^{\frac{x}{50}}\]},
 wobei der Parameter a bestimmt, wie groß das Verhältnis bei maximaler Auslenkung ist und x den momentanen Richtungswert angibt.
-Nach einigen Testläufen wurde der Parameter a zu 2 bestimmt. Dadurch bewegt sich der linke Motor mindestens halb so schnell und maximal doppelt so schnell wie der rechte Motor.
+Nach einigen Testläufen wurde der Parameter a zu 2 bestimmt. Dadurch bewegt sich der linke Motor mindestens halb so schnell und maximal doppelt so schnell wie der rechte Motor. Der zugehörige Code ist in Listing \ref{code:rc_motor} zu sehen.
 
-\begin{lstlisting}
+\begin{lstlisting}[captionpos = b, caption=Umrechnung der RC Parameter in Motorbefehle, label = code:rc_motor]
 double ratioLR = Math.pow(2,((double) dir/50));
 if (ratioLR > 1) {
 	robot.setMotorRight(
@@ -117,10 +109,11 @@ if (ratioLR < 1) {
 \end{lstlisting}
 
 
-\subsubsection{Webanwendung}
+\subsubsection{Pfeiltasten Steuerung}
 \label{sec:webanwendung_server}
-Diese Steuervariante hat einen bedeutenden Nachteil. Da die Eingangsparameter die momentan gedrückten Tasten sind (siehe Abschnitt \ref{sec:webanwendung_anwendung}), gibt es keine Zwischenwerte für die Beschleunigung oder Richtung. Die Taste nach vorne bedeutet hierbei einen Motorschub für beide Seiten von 100\%. Für jede zusätzliche Richtungstaste, also links oder rechts, werden auf der dementsprechenden Seite 25\% abgezogen. Wird nur eine Richtungstaste ohne eine Beschleunigungstaste gedrückt, werden die Motoren auf -15\%/15\% bzw. 15\%/-15\% gesetzt, was einer Drehung auf der Stelle entspricht. Diese \glqq Alles oder Nichts\grqq Steuerung führt im Spiel zu einer nicht flüssigen, jedoch durch die Möglichkeit der Drehung auf der Stelle zu einer annehmbaren Steuerung. Nachfolgend ist der Code für diese Umrechnung dargestellt.
-\begin{lstlisting}
+Diese Steuervariante hat einen bedeutenden Nachteil. Da die Eingangsparameter die momentan gedrückten Tasten sind (siehe Abschnitt \ref{sec:webanwendung_anwendung}), gibt es keine Zwischenwerte für die Beschleunigung oder Richtung. Die Taste nach vorne bedeutet hierbei einen Motorschub für beide Seiten von 100\%. Für jede zusätzliche Richtungstaste, also links oder rechts, werden auf der dementsprechenden Seite 25\% abgezogen. Wird nur eine Richtungstaste ohne eine Beschleunigungstaste gedrückt, werden die Motoren auf -15\%/15\% bzw. 15\%/-15\% gesetzt, was einer Drehung auf der Stelle entspricht. Diese \glqq Alles oder Nichts\grqq Steuerung führt im Spiel zu einer nicht flüssigen, jedoch durch die Möglichkeit der Drehung auf der Stelle zu einer annehmbaren Steuerung. Der Code dafür ist in Listing \ref{code:wasd_motor} gezeigt.
+
+\begin{lstlisting}[captionpos = b, caption=Umrechnung der Pfeiltasten in Motorbefehle, label = code:wasd_motor]
 if (JSONUtil.jsonObjToBoolean(command.get("up"))) {
 	motorLeft += 100;
 	motorRight += 100;
@@ -153,9 +146,9 @@ JSONUtil.jsonObjToBoolean(command.get("left"))) {
  
 
 \subsection{Bildübertragung}
-Wie in der Schnittstellenbeschreibung in Kapitel \ref{sec:schnittstelle} beschrieben, werden die Bilddaten vom Roboter an die Statusnachrichten angehängt. Hierbei kennzeichnen die Bytes FF D8 den Beginn eines neuen Frames. Diese Kombination tritt in JPEG-kodierten Bildern immer nur am Anfang des Bildes auf, wodurch es möglich ist, Bilddaten über mehrere Pakete zu verteilen. Diese Daten werden in der \textit{Player}-Klasse gepuffert, bis das Bild vollständig ist. Anschließend wird es noch base64 kodiert und sofort an die Controller weiter gesendet und nicht mit den regelmäßigen Statusbefehlen, um keine unnötige Zeitverzögerung einzubauen. Die base64 Kodierung wurde im Gegensatz zur einfachen Byte-Orientierten übertragen bevorzugt, damit mit den Controllern in einer höheren Datenabstraktionsebene kommuniziert werden kann. Das vereinfacht den Code vor allem in der Webanwendung, da diese in Javascript implementiert ist. Ein großer Nachteil dieser Kodierung ist der größere Speicherbedarf, der die Übertragung aufgrund höheren Traffics langsamer macht und dadurch zu Verzögerungen führt, die letztendlich im Verlust der Steuerbarkeit resultieren können. Nach ersten Tests ist die Bildrate vom Roboter jedoch so gering, dass diese wenigen Frames rechtzeitig übertragen werden können. Zusätzlich sind die Frames in einer Größenordnung, in der 33 \% Mehrbedarf noch zu keiner Netzwerküberlastung führen.\\ Der Servercode für die Pufferung der Bilddaten des Roboters sieht folgendermaßen aus:
+Wie in der Schnittstellenbeschreibung in Kapitel \ref{sec:schnittstelle} beschrieben, werden die Bilddaten vom Roboter an die Statusnachrichten angehängt. Hierbei kennzeichnen die Bytes FF D8 den Beginn eines neuen Frames. Diese Kombination tritt in JPEG-kodierten Bildern immer nur am Anfang des Bildes auf, wodurch es möglich ist, Bilddaten über mehrere Pakete zu verteilen. Diese Daten werden in der \textit{Player}-Klasse gepuffert, bis das Bild vollständig ist. Anschließend wird es noch base64 kodiert und sofort an die Controller weiter gesendet und nicht mit den regelmäßigen Statusbefehlen, um keine unnötige Zeitverzögerung einzubauen. Die base64 Kodierung wurde im Gegensatz zur einfachen Byte-Orientierten übertragen bevorzugt, damit mit den Controllern in einer höheren Datenabstraktionsebene kommuniziert werden kann. Das vereinfacht den Code vor allem in der Webanwendung, da diese in Javascript implementiert ist. Ein großer Nachteil dieser Kodierung ist der größere Speicherbedarf, der die Übertragung aufgrund höheren Traffics langsamer macht und dadurch zu Verzögerungen führt, die letztendlich im Verlust der Steuerbarkeit resultieren können. Nach ersten Tests ist die Bildrate vom Roboter jedoch so gering, dass diese wenigen Frames rechtzeitig übertragen werden können. Zusätzlich sind die Frames in einer Größenordnung, in der 33 \% Mehrbedarf noch zu keiner Netzwerküberlastung führen.\\ Der Servercode für die Pufferung der Bilddaten des Roboters ist in Listing \ref{code:puffer_pic} aufgeführt.
 
-\begin{lstlisting}
+\begin{lstlisting}[captionpos = b, caption=Logik für die Pufferung der Bilddaten, label = code:puffer_pic]
 private void handlePictureData(byte[] data) {
 	for (int i = 0; i < data.length; i++) {
 		if (data[i] == (byte) 0xFF && 
@@ -175,7 +168,7 @@ private void handlePictureData(byte[] data) {
 
 \subsection{Torfindung}
 \label{sec:torfindung}
-Mit der Torfindung ist der Vorgang gemeint, um die Ladestation, die im Tor integriert ist zu finden und selbstständig anzufahren. Über die Statusmeldungen des Roboters erfährt der Server wie hoch der Akkustand des Roboters ist. Sobald der Roboter ein Minimum des Akkustands unterschreitet, greift die Torfindung ein. Diese wird in der Klasse \textit{EnergyManager} implementiert (siehe Abb. \ref{fig:uml_energymanager}). Dabei wird die Torfindung sofort aktiviert, wenn sich ein Roboter mit dem Server verbindet und nicht erst wenn noch ein Controller hinzu kommt. Tritt der Fall ein, dass der Akku die Minimalschwelle unterschreitet, werden die Infrarot-LEDs über die Klasse \textit{BlinkTask} angeschaltet. Über das \glqq seeGoal\grqq Flag (vgl. Schnittstellenbeschreibung, Kapitel \ref{sec:schnittstelle}) kann erkannt werden, ob das zum Roboter gehörende Tor in Sicht ist oder ob sich der Roboter neben der zum Tor führenden LED befindet. Bekommt der Server vom Roboter drei aufeinander folgende Stati, in denen der Roboter meldet, dass eine LED in Sicht ist, dann fährt der Roboter in die dementsprechende Richtung. Ist der Roboter vom eigenen Tor abgewandt, beginnt sich der Roboter zu drehen, solange bis entweder mindestens ein Status mit positiver Rückmeldung kommt, oder bis ein Timeout abgelaufen ist. Um die Drehung zu unterbrechen genügt deswegen bereits ein Status mit einer Sichtung, um die Möglichkeit einer korrekten Sichtung nicht durch zu schnelles drehen sofort zu verwerfen. Der Timeout bewirkt, dass sich der Roboter nicht endlos um sich selbst dreht, falls er außerhalb des Abstrahlwinkels der LEDs ist. Tritt ein Timeout auf, fährt der Roboter wenige Sekunden in die aktuelle Richtung, um seine Ausgangsposition zufällig zu ändern. Nach diesem Prinzip wird früher oder später eine LED erkannt und das Tor und damit die Ladestation kann angefahren werden. \\ Umgesetzt wurde die Torfindung mithilfe eines Zustandsautomaten (Abbildung \ref{fig:state_findgoal}).
+Mit der Torfindung ist der Vorgang gemeint, um die Ladestation, die im Tor integriert ist zu finden und selbstständig anzufahren. Über die Statusmeldungen des Roboters erfährt der Server wie hoch der Akkustand des Roboters ist. Sobald der Roboter ein Minimum des Akkustands unterschreitet, greift die Torfindung ein. Diese wird in der Klasse \textit{EnergyManager} implementiert (siehe Abb. \ref{fig:uml_energymanager}). Dabei wird die Torfindung sofort aktiviert, wenn sich ein Roboter mit dem Server verbindet und nicht erst wenn noch ein Controller hinzu kommt. Tritt der Fall ein, dass der Akku den Schwellenwert unterschreitet, werden die Infrarot-LEDs über die Klasse \textit{BlinkTask} angeschaltet. Über das \glqq seeGoal\grqq Flag (vgl. Schnittstellenbeschreibung, Kapitel \ref{sec:schnittstelle}) kann erkannt werden, ob das zum Roboter gehörende Tor in Sicht ist oder ob sich der Roboter neben der zum Tor führenden LED befindet. Bekommt der Server vom Roboter drei aufeinander folgende Stati, in denen der Roboter meldet, dass eine LED in Sicht ist, dann fährt der Roboter in die dementsprechende Richtung. Ist der Roboter vom eigenen Tor abgewandt, beginnt sich der Roboter zu drehen, solange bis entweder mindestens ein Status mit positiver Rückmeldung kommt, oder bis ein Timeout abgelaufen ist. Um die Drehung zu unterbrechen genügt deswegen bereits ein Status mit einer Sichtung, um die Möglichkeit einer korrekten Sichtung nicht durch zu schnelles drehen sofort zu verwerfen. Der Timeout bewirkt, dass sich der Roboter nicht endlos um sich selbst dreht, falls er außerhalb des Abstrahlwinkels der LEDs ist. Tritt ein Timeout auf, fährt der Roboter wenige Sekunden in die aktuelle Richtung, um seine Ausgangsposition zufällig zu ändern. Nach diesem Prinzip wird früher oder später eine LED erkannt und das Tor und damit die Ladestation kann angefahren werden. \\ Umgesetzt wurde die Torfindung mithilfe eines Zustandsautomaten (Abbildung \ref{fig:state_findgoal}). Da der Code einige Zeilen umfasst wird an dieser Stelle auf das Projekt verwiesen \cite{PROJEKT}.
 
 \begin{figure}[!h]
 	\includegraphics[width=\textwidth]{images/state_diagramm_findgoal.pdf}
@@ -198,7 +191,7 @@ Der Nachteil bei dieser Implementierung ist natürlich die unsichere Verhaltensw
 \section{Webanwendung}
 \label{sec:webanwendung_anwendung}
 
-Die Webanwendung stellt eine Steuerungsvariante dar, die von überall aus genutzt werden kann, wo eine Tastatur und ein Browser vorhanden sind. Sie ist in Javascript implementiert und wird direkt von einem ebenfalls auf dem Server installierten Jetty-Webserver gehostet. Dabei funktioniert die Kommunikation genau wie bei der Android-Anwendung über einen WebSocket, der die gegebene Kommunikationsschnittstelle für die Controller auf dem Server nutzt. 
+Die Webanwendung stellt eine Steuerungsvariante dar, die von überall aus genutzt werden kann, wo eine Tastatur und ein Browser vorhanden sind. Sie ist in Javascript implementiert und wird direkt von einem ebenfalls auf dem Server installierten Jetty-Webserver gehostet. Aufgerufen werden kann er über die IP-Adresse des Host-Systems unter Port 8080. Dabei funktioniert die Kommunikation genau wie bei der Android-Anwendung über einen WebSocket, der die gegebene Kommunikationsschnittstelle für die Controller auf dem Server nutzt. 
 Die Oberfläche besteht lediglich aus einem Container für die Bilddaten. 
 Über die gewohnte Pfeiltasten-Steuerung kann der Roboter gesteuert werden. Die gedrückten Tasten werden hierbei nur an den Server weitergegeben, erst dort werden sie verarbeitet (siehe Abschnitt \ref{sec:webanwendung_server}).
 
@@ -247,9 +240,9 @@ Diese Steuerung ist die am wenigsten abstrahierte Steuerung. Es gibt zwei vertik
 
 \section{RobotSimulator}
 Einige Komponenten im Code des Servers benötigen gewisse Informationen vom Roboter, wie zum Beispiel die Bildübertragung. Da die Roboter gleichzeitig zur Steuerung entwickelt wurden und deswegen nicht rund um die Uhr zur Verfügung standen war es hilfreich einen Simulator zu entwickeln, der Befehle im exakt selben Format versendet. So wurde die gesamte Roboter-Server Kommunikation simuliert. Hierzu wurde ein Paket mit festen Werten erstellt, das genau wie der Roboter auch, alle 100ms per UDP an den Server gesendet wird.\\
-Um die Bilddatenpufferung des Servers testen zu können, wurden zwei Beispielbilder von der Festplatte in ein großes Byte-Array geladen. So war es möglich die Eigenschaft des Roboters zu simulieren, Bilddaten ohne Trennung, also keine separierten Bilder zu senden (vgl. folgender Codeauszug). \\
+Um die Bilddatenpufferung des Servers testen zu können, wurden zwei Beispielbilder von der Festplatte in ein großes Byte-Array geladen. So war es möglich die Eigenschaft des Roboters zu simulieren, Bilddaten ohne Trennung, also keine separierten Bilder zu senden (vgl. Listing \ref{code:robot_sim}). \\
 
-\begin{lstlisting}
+\begin{lstlisting}[captionpos = b, caption=Quellcode des RobotSimulators zum Testen der Kameraübertragung, label = code:robot_sim]
 puffer = new byte[puffer1.length + puffer2.length];
 System.arraycopy(puffer1, 0, puffer, 0, puffer1.length);
 System.arraycopy(puffer2, 0, puffer, puffer1.length, puffer2.length);
